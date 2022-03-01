@@ -1,5 +1,6 @@
 const readline = require('readline');
 const chalk = require("chalk");
+const fs = require('fs');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -11,15 +12,16 @@ printStartProgramme();
 
 rl.on('line', (argument) => {
     console.log("");
+    const listArgument = argument.split(" ");
 
-    switch(argument) {
+    switch(listArgument[0]) {
 
         case "info":
           printAddDetails();
           break;
         
         case "add":
-          console.log("test ! ");
+
           break;
       
         case "exit":
@@ -46,6 +48,12 @@ function printStartProgramme(){
   console.log("");
   console.log(chalk.yellow("type info to list commandes"));
 }
+
+function createJsonFileIfDontExist() {
+  fs.closeSync(fs.openSync("./dat.json", 'a'));
+}
+
+createJsonFileIfDontExist();
 
 //event handle at close
 
