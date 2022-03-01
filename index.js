@@ -6,31 +6,43 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-
-console.log("/********* Welcome to MY_TODO *********/");
-console.log(chalk.yellow("type info to list commandes"));
+printStartProgramme();
 
 
-rl.on('line', (commande) => {
+rl.on('line', (requiredArg, optionalArg1, optionalArg2) => {
+    console.log("");
 
-    switch(commande) {
+    switch(true) {
 
-        case "info":
-          printAvailableCommandes()
+        case requiredArg == "info":
+          printAddDetails();
           break;
 
-        case "exit":
+      
+        case requiredArg == "exit":
             rl.close();
             break;
 
         default:
-        console.log('Commande not found, type info for more information');
-
+        console.log(chalk.red('Commande not found, type info for more information'));
       }
 });
 
 
 
+
+
+function printAddDetails(){
+  console.log("To add a new TODO write: add argument1 argument2");
+  console.log("arument1: the name of your TODO");
+  console.log("argument2: the content of your TODO");
+}
+
+function printStartProgramme(){
+  console.log(chalk.red("/********* Welcome to MY_TODO *********/"));
+  console.log("");
+  console.log(chalk.yellow("type info to list commandes"));
+}
 
 //event handle at close
 
