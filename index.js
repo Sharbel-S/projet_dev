@@ -9,17 +9,20 @@ const rl = readline.createInterface({
 printStartProgramme();
 
 
-rl.on('line', (requiredArg, optionalArg1, optionalArg2) => {
+rl.on('line', (argument) => {
     console.log("");
 
-    switch(true) {
+    switch(argument) {
 
-        case requiredArg == "info":
+        case "info":
           printAddDetails();
           break;
-
+        
+        case "add":
+          console.log("test ! ");
+          break;
       
-        case requiredArg == "exit":
+        case "exit":
             rl.close();
             break;
 
