@@ -89,6 +89,10 @@ rl.on('line', (argument) => {
         case "list":
           listAllTodoInJson();
           break;
+        
+        case "remove":
+          askForTitleToRemove();
+          break;
 
         case "exit":
             rl.close();
@@ -100,8 +104,42 @@ rl.on('line', (argument) => {
 });
 
 
+function removeTodo(arr) {
+  fs.readFile('data.json','utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+      todoList = JSON.parse(data); 
+      for (var i = 0; i < todoList.length; i ++) {
+        if(todoList[i].title == arr) {
+          todoList.splice(i);
+          break;
+        }
+      }
+      json = JSON.stringify(todoList);
+      fs.writeFile("data.json", json, (err) => {
+        if (err)
+          console.log(err);
+        else {
+          console.log("Todo has benn successfully removed\n");
+        }
+      });
+  }});
+}
 
 
+function askForTitleToRemove() {
+  return new Promise((resolve, reject) => {
+    rl.question('enter the subject of the todo you want to delete: ',(arr)=>{
+     
+      removeTodo(arr);
+      
+
+
+     resolve();
+    });
+})
+}
 
 function printAddDetails(){
   console.log("To add a new TODO write: add argument1 argument2");
