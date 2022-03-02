@@ -28,6 +28,7 @@ rl.on('line', (argument) => {
         case "info":
           printAddDetails();
           printRemoveDetails();
+          printListeDetails();
           break;
         
         case "list":
@@ -148,9 +149,9 @@ function printAddDetails(){
   console.log("----------------------------------");
   console.log(chalk.yellow("How to add new todo: "))
   console.log();
-  console.log(chalk.magentaBright("1- write: add"));
-  console.log(chalk.magentaBright("2- enter the title of your todo and press Enter"));
-  console.log(chalk.magentaBright("3- enter the subject of your todo and press Enter"));
+  console.log(("1- write: add"));
+  console.log(("2- enter the title of your todo and press Enter"));
+  console.log(("3- enter the subject of your todo and press Enter"));
   console.log();
   console.log(chalk.green("Well done! you have juste added a new todo to your list !"));
   console.log("----------------------------------");
@@ -160,10 +161,20 @@ function printRemoveDetails(){
   console.log("----------------------------------");
   console.log(chalk.yellow("How to remove a todo: "))
   console.log();
-  console.log(chalk.magentaBright("1- write: remove"));
-  console.log(chalk.magentaBright("2- enter the title of your todo that you want to remove and press Enter"));
+  console.log(("1- write: remove"));
+  console.log(("2- enter the title of your todo that you want to remove and press Enter"));
   console.log();
-  console.log(chalk.red("Well done! you have juste removed your todo!"));
+  console.log(chalk.green("Well done! you have juste removed your todo!"));
+  console.log("----------------------------------");
+}
+
+function printListeDetails(){
+  console.log("----------------------------------");
+  console.log(chalk.yellow("How to print the list of todos: "))
+  console.log();
+  console.log(("1- write: list"));
+  console.log();
+  console.log(chalk.green("Well done! you have juste printed all your todos!"));
   console.log("----------------------------------");
 }
 
