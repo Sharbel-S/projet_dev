@@ -28,8 +28,28 @@ function askForSubject() {
     rl.question('enter a subject: ',(arr)=>{
       todoSubject = arr;
       resolve();
+      pushDataToJsonFile();
     });
 })
+}
+
+function pushDataToJsonFile() {
+  fs.readFile('data.json','utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+      obj = JSON.parse(data); 
+      obj.push({"title": todoTitle, "subject": todoSubject}); 
+      json = JSON.stringify(obj);
+
+      fs.writeFile("data.json", json, (err) => {
+        if (err)
+          console.log(err);
+        else {
+          console.log("Todo written successfully\n");
+        }
+      });
+  }});
 }
 
 
@@ -47,8 +67,6 @@ rl.on('line', (argument) => {
           printAddDetails();
           console.log("subj = ", todoSubject);
           console.log("title = ", todoTitle);
-
-
           break;
         
         case "add":
