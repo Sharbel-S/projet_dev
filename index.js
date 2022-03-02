@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const fs = require('fs');
 var todoTitle = "";
 var todoSubject = "";
-var my_todo = {};
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -52,6 +52,23 @@ function pushDataToJsonFile() {
   }});
 }
 
+function listAllTodoInJson() {
+  fs.readFile('data.json','utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+      todoList = JSON.parse(data); 
+      for (var i = 0; i < todoList.length; i ++) {
+        console.log("Todo n°", i);
+        console.log("");
+        console.log(chalk.blue("Title: ", todoList[i].title));
+        console.log(chalk.green("Subject: ", todoList[i].subject));
+        console.log("----------------------------");
+      }
+  }});
+
+}
+
 
 rl.on('line', (argument) => {
     console.log("");
@@ -69,25 +86,10 @@ rl.on('line', (argument) => {
           console.log("title = ", todoTitle);
           break;
         
-        case "add":
-          if(listArgument.length != 3) {
-            console.log(chalk.red("To add new Todo, please respecte the following example :"));
-            console.log(chalk.yellow("add , argument1, argument2"));
-          }
-          else {
-            fs.readFile('data.json','utf8', function readFileCallback(err, data){
-              if (err){
-                  console.log(err);
-              } else {
-                console.log(" data  : ", data);
-              obj = JSON.parse(data); //now it an object
-              obj.table.push({id: 2, square:3}); //add some data
-              json = JSON.stringify(obj); //convert it back to json
-              fs.writeFile('data.json', json, 'utf8', callback); // write it back 
-          }});
-          }
+        case "list":
+          listAllTodoInJson();
           break;
-      
+
         case "exit":
             rl.close();
             break;
