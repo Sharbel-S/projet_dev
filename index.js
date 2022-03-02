@@ -18,7 +18,6 @@ function askForTitle() {
       todoTitle = arr;
       resolve();
       askForSubject();
-
     });
 })
 }
@@ -46,7 +45,8 @@ function pushDataToJsonFile() {
         if (err)
           console.log(err);
         else {
-          console.log("Todo written successfully\n");
+          console.log();
+          console.log(chalk.green("Todo has been added successfully ✔\n"));
         }
       });
   }});
@@ -57,14 +57,21 @@ function listAllTodoInJson() {
     if (err){
         console.log(err);
     } else {
-      todoList = JSON.parse(data); 
-      for (var i = 0; i < todoList.length; i ++) {
-        console.log("Todo n°", i);
-        console.log("");
-        console.log(chalk.blue("Title: ", todoList[i].title));
-        console.log(chalk.green("Subject: ", todoList[i].subject));
-        console.log("----------------------------");
+      todoList = JSON.parse(data);
+      if(todoList.length == 0) {
+        console.log(chalk.yellow("There is no Todo in the list"));
+        console.log();
       }
+      else {
+        for (var i = 0; i < todoList.length; i ++) {
+          console.log("Todo n°", i);
+          console.log("");
+          console.log(chalk.blue("Title: ", todoList[i].title));
+          console.log(chalk.green("Subject: ", todoList[i].subject));
+          console.log("----------------------------");
+        }
+      }
+
   }});
 
 }
@@ -82,8 +89,6 @@ rl.on('line', (argument) => {
 
         case "info":
           printAddDetails();
-          console.log("subj = ", todoSubject);
-          console.log("title = ", todoTitle);
           break;
         
         case "list":
@@ -95,8 +100,8 @@ rl.on('line', (argument) => {
           break;
 
         case "exit":
-            rl.close();
-            break;
+          rl.close();
+          break;
 
         default:
         console.log(chalk.red('Commande not found, type info for more information'));
@@ -121,7 +126,8 @@ function removeTodo(arr) {
         if (err)
           console.log(err);
         else {
-          console.log("Todo has benn successfully removed\n");
+          console.log();
+          console.log(chalk.red("Todo has benn removed successfully ✔\n"));
         }
       });
   }});
@@ -130,13 +136,9 @@ function removeTodo(arr) {
 
 function askForTitleToRemove() {
   return new Promise((resolve, reject) => {
-    rl.question('enter the subject of the todo you want to delete: ',(arr)=>{
-     
-      removeTodo(arr);
-      
-
-
-     resolve();
+    rl.question('enter the subject of the todo you want to delete: ',(arr)=>{ 
+    removeTodo(arr);
+    resolve();
     });
 })
 }
@@ -148,9 +150,14 @@ function printAddDetails(){
 }
 
 function printStartProgramme(){
-  console.log(chalk.red("/********* Welcome to MY_TODO *********/"));
+  console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
   console.log("");
-  console.log(chalk.yellow("type info to list commandes"));
+  console.log("----------------------------------")
+  console.log(chalk.cyanBright("type list for details."));
+  console.log(chalk.cyanBright("type add to add new todo"));
+  console.log(chalk.cyanBright("type remove to delete a todo"));
+  console.log(chalk.cyanBright("type list to print all available todos"));
+  console.log("----------------------------------")
 }
 
 function createJsonFileIfDontExist() {
