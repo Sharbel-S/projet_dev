@@ -10,6 +10,42 @@ const rl = readline.createInterface({
 });
 
 printStartProgramme();
+createJsonFileIfDontExist();
+
+
+
+
+rl.on('line', (argument) => {
+    console.log("");
+    const listArgument = argument.split(" ");
+
+    switch(listArgument[0]) {
+      
+        case "add":
+          askForTitle();
+          break;
+
+        case "info":
+          printAddDetails();
+          printRemoveDetails();
+          break;
+        
+        case "list":
+          listAllTodoInJson();
+          break;
+        
+        case "remove":
+          askForTitleToRemove();
+          break;
+
+        case "exit":
+          rl.close();
+          break;
+
+        default:
+        console.log(chalk.red('Commande not found, type info for more information'));
+      }
+});
 
 
 function askForTitle() {
@@ -19,7 +55,7 @@ function askForTitle() {
       resolve();
       askForSubject();
     });
-})
+  })
 }
 
 function askForSubject() {
@@ -29,21 +65,21 @@ function askForSubject() {
       resolve();
       pushDataToJsonFile();
     });
-})
+  })
 }
 
 function pushDataToJsonFile() {
-  fs.readFile('data.json','utf8', function readFileCallback(err, data){
+  fs.readFile('data.json','utf8', function readFileCallback(err, dataFromJson){
     if (err){
         console.log(err);
     } else {
-      obj = JSON.parse(data); 
-      obj.push({"title": todoTitle, "subject": todoSubject}); 
-      json = JSON.stringify(obj);
+      todoList = JSON.parse(dataFromJson); 
+      todoList.push({"title": todoTitle, "subject": todoSubject}); 
+      json = JSON.stringify(todoList);
 
       fs.writeFile("data.json", json, (err) => {
         if (err)
-          console.log(err);
+          console.log( chalk.red("something went wrong, please try again."));
         else {
           console.log();
           console.log(chalk.green("Todo has been added successfully ✔\n"));
@@ -71,43 +107,8 @@ function listAllTodoInJson() {
           console.log("----------------------------");
         }
       }
-
   }});
-
 }
-
-
-rl.on('line', (argument) => {
-    console.log("");
-    const listArgument = argument.split(" ");
-
-    switch(listArgument[0]) {
-      
-        case "add":
-          askForTitle();
-          break;
-
-        case "info":
-          printAddDetails();
-          break;
-        
-        case "list":
-          listAllTodoInJson();
-          break;
-        
-        case "remove":
-          askForTitleToRemove();
-          break;
-
-        case "exit":
-          rl.close();
-          break;
-
-        default:
-        console.log(chalk.red('Commande not found, type info for more information'));
-      }
-});
-
 
 function removeTodo(arr) {
   fs.readFile('data.json','utf8', function readFileCallback(err, data){
@@ -140,20 +141,38 @@ function askForTitleToRemove() {
     removeTodo(arr);
     resolve();
     });
-})
+  })
 }
 
 function printAddDetails(){
-  console.log("To add a new TODO write: add argument1 argument2");
-  console.log("arument1: the name of your TODO");
-  console.log("argument2: the content of your TODO");
+  console.log("----------------------------------");
+  console.log(chalk.yellow("How to add new todo: "))
+  console.log();
+  console.log(chalk.magentaBright("1- write: add"));
+  console.log(chalk.magentaBright("2- enter the title of your todo and press Enter"));
+  console.log(chalk.magentaBright("3- enter the subject of your todo and press Enter"));
+  console.log();
+  console.log(chalk.green("Well done! you have juste added a new todo to your list !"));
+  console.log("----------------------------------");
 }
+
+function printRemoveDetails(){
+  console.log("----------------------------------");
+  console.log(chalk.yellow("How to remove a todo: "))
+  console.log();
+  console.log(chalk.magentaBright("1- write: remove"));
+  console.log(chalk.magentaBright("2- enter the title of your todo that you want to remove and press Enter"));
+  console.log();
+  console.log(chalk.red("Well done! you have juste removed your todo!"));
+  console.log("----------------------------------");
+}
+
 
 function printStartProgramme(){
   console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
   console.log("");
   console.log("----------------------------------")
-  console.log(chalk.cyanBright("type list for details."));
+  console.log(chalk.cyanBright("type info for details."));
   console.log(chalk.cyanBright("type add to add new todo"));
   console.log(chalk.cyanBright("type remove to delete a todo"));
   console.log(chalk.cyanBright("type list to print all available todos"));
@@ -165,10 +184,7 @@ function createJsonFileIfDontExist() {
   fs.closeSync(fs.openSync("./data.json", 'a'));
 }
 
-createJsonFileIfDontExist();
-
 //event handle at close
-
 rl.on('close', function () {
     console.log(chalk.yellow("Thank you for using MY_TODO !"));
     process.exit(0);
