@@ -61,8 +61,8 @@ function askForTitle() {
 
 function askForSubject() {
   return new Promise((resolve, reject) => {
-    rl.question('enter a subject: ',(arr)=>{
-      todoSubject = arr;
+    rl.question('enter a subject: ',(inputSubject)=>{
+      todoSubject = inputSubject;
       resolve();
       pushDataToJsonFile();
     });
@@ -77,7 +77,6 @@ function pushDataToJsonFile() {
       todoList = JSON.parse(dataFromJson); 
       todoList.push({"title": todoTitle, "subject": todoSubject}); 
       json = JSON.stringify(todoList);
-
       fs.writeFile("data.json", json, (err) => {
         if (err)
           console.log( chalk.red("something went wrong, please try again."));
@@ -101,12 +100,13 @@ function listAllTodoInJson() {
       }
       else {
         for (var i = 0; i < todoList.length; i ++) {
+          console.log("----------------------------");
           console.log("Todo n°", i);
           console.log("");
           console.log(chalk.blue("Title: ", todoList[i].title));
           console.log(chalk.green("Subject: ", todoList[i].subject));
-          console.log("----------------------------");
         }
+        console.log("----------------------------");
       }
   }});
 }
@@ -193,7 +193,19 @@ function printStartProgramme(){
 function createJsonFileIfDontExist() {
   // the 'a' parametre will check if the file already existe, if not it will create one
   fs.closeSync(fs.openSync("./data.json", 'a'));
+  addEmptyArrayToEmptyJson();
 }
+
+function addEmptyArrayToEmptyJson() {
+  fs.readFile('data.json','utf8', function readFileCallback(err, data){
+    if(data == "") {
+      fs.writeFile ("data.json", JSON.stringify([]), function() {
+        }
+      );
+    }
+  });
+}
+
 
 //event handle at close
 rl.on('close', function () {
