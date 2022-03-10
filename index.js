@@ -116,29 +116,40 @@ function removeTodo(arr) {
     if (err){
         console.log(err);
     } else {
-      todoList = JSON.parse(data); 
-      for (var i = 0; i < todoList.length; i ++) {
-        if(todoList[i].title == arr) {
-          todoList.splice(i);
-          break;
-        }
+      todoList = JSON.parse(data);
+      titleInList = checkIfTitleInList(todoList, arr);
+      if(!titleInList) {
+        console.log(chalk.red("Title not found !"));
       }
-      json = JSON.stringify(todoList);
-      fs.writeFile("data.json", json, (err) => {
-        if (err)
-          console.log(err);
-        else {
-          console.log();
-          console.log(chalk.red("Todo has benn removed successfully ✔\n"));
-        }
-      });
+      else {
+        json = JSON.stringify(todoList);
+        fs.writeFile("data.json", json, (err) => {
+          if (err)
+            console.log(err);
+          else {
+            console.log();
+            console.log(chalk.red("Todo has benn removed successfully ✔\n"));
+          }
+        });
+      }
   }});
 }
 
+function checkIfTitleInList(todoList, arr) {
+  var titleInList = 0;
+  for (var i = 0; i < todoList.length; i ++) {
+    if(todoList[i].title == arr) {
+      titleInList = 1;
+      todoList.splice(i);
+      break;
+    }
+  }
+  return titleInList;
+}
 
 function askForTitleToRemove() {
   return new Promise((resolve, reject) => {
-    rl.question('enter the subject of the todo you want to delete: ',(arr)=>{ 
+    rl.question('enter the title of the todo you want to delete: ',(arr)=>{ 
     removeTodo(arr);
     resolve();
     });
