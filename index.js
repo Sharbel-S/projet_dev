@@ -126,13 +126,13 @@ function listAllTodoInJson() {
   }});
 }
 
-function removeTodo(arr) {
+function removeTodo(title) {
   fs.readFile('data.json','utf8', function readFileCallback(err, data){
     if (err){
         console.log(err);
     } else {
       todoList = JSON.parse(data);
-      titleInList = checkIfTitleInList(todoList, arr);
+      titleInList = checkIfTitleInList(todoList, title);
       if(!titleInList) {
         console.log(chalk.red("Title not found !"));
       }
@@ -164,11 +164,23 @@ function checkIfTitleInList(todoList, arr) {
 
 function askForTitleToRemove() {
   return new Promise((resolve, reject) => {
-    rl.question('enter the title of the todo you want to delete: ',(arr)=>{ 
-    removeTodo(arr);
+    rl.question('enter the title of the todo you want to delete: ',(title)=>{ 
+    removeTodoFromDataBase(title);
+    removeTodo(title);
     resolve();
     });
   })
+}
+
+function removeTodoFromDataBase(title) {
+  client.connect(err => {
+    var dataToRemove = {"title": title};
+    dbo.collection("TodoList").deleteOne(dataToRemove, function(err, res) {
+      if (err) throw err;
+      console.log("1 document removed");
+      client.close();
+    });
+  });
 }
 
 function printAddDetails(){
