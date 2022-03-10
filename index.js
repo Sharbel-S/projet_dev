@@ -198,6 +198,7 @@ function printStartProgramme(){
   console.log(chalk.cyanBright("type add to add new todo"));
   console.log(chalk.cyanBright("type remove to delete a todo"));
   console.log(chalk.cyanBright("type list to print all available todos"));
+  console.log(chalk.cyanBright("type exit to close the application"));
   console.log("----------------------------------")
 }
 
