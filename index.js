@@ -35,7 +35,8 @@ rl.on('line', (argument) => {
           break;
         
         case "list":
-          listAllTodoInJson();
+          //listAllTodoInJson();
+          listAllTodoInDataBase();
           break;
         
         case "remove":
@@ -101,6 +102,18 @@ function pushDataToJsonFile() {
         }
       });
   }});
+}
+
+function listAllTodoInDataBase() {
+  client.connect(err => {
+    dbo.collection("TodoList").find({}).toArray(function (err, result) {
+      if (err) {
+          console.log(err);
+      } else {
+        console.log(result);
+      }
+    })
+  });
 }
 
 function listAllTodoInJson() {
