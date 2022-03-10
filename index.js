@@ -1,5 +1,10 @@
+const { MongoClient, ServerApiVersion, Db } = require('mongodb');
+const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+var dbo = client.db("Todos");
 const readline = require('readline');
 const chalk = require("chalk");
+
 const fs = require('fs');
 var todoTitle = "";
 var todoSubject = "";
@@ -11,8 +16,6 @@ const rl = readline.createInterface({
 
 printStartProgramme();
 createJsonFileIfDontExist();
-
-
 
 
 rl.on('line', (argument) => {
@@ -65,8 +68,20 @@ function askForSubject() {
       todoSubject = inputSubject;
       resolve();
       pushDataToJsonFile();
+      addDataToDataBase();
     });
   })
+}
+
+function addDataToDataBase() {
+  client.connect(err => {
+    var newData = {"title": todoTitle, "subject":todoSubject};
+    dbo.collection("TodoList").insertOne(newData, function(err, res) {
+      if (err) throw err;
+      console.log("1 document inserted");
+      client.close();
+    });
+  });
 }
 
 function pushDataToJsonFile() {
@@ -79,7 +94,7 @@ function pushDataToJsonFile() {
       json = JSON.stringify(todoList);
       fs.writeFile("data.json", json, (err) => {
         if (err)
-          console.log( chalk.red("something went wrong, please try again."));
+          console.log(chalk.red("something went wrong, please try again."));
         else {
           console.log();
           console.log(chalk.green("Todo has been added successfully ✔\n"));
@@ -224,4 +239,7 @@ rl.on('close', function () {
     console.log(chalk.yellow("Thank you for using MY_TODO !"));
     process.exit(0);
 });
+
+
+
 
