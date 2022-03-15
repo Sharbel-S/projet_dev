@@ -8,6 +8,9 @@ const chalk = require("chalk");
 const fs = require('fs');
 var todoTitle = "";
 var todoSubject = "";
+var todoEmail = "";
+var todoPassword = "";
+var todoNewTitle = "";
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -43,8 +46,16 @@ rl.on('line', (argument) => {
           askForTitleToRemove();
           break;
 
+        case "signin":
+          askForLog();
+          break;
+
         case "exit":
           rl.close();
+          break;
+        
+        case "modify":
+          askForModify();
           break;
 
         default:
@@ -63,12 +74,53 @@ function askForTitle() {
   })
 }
 
+
 function askForSubject() {
   return new Promise((resolve, reject) => {
     rl.question('enter a subject: ',(inputSubject)=>{
       todoSubject = inputSubject;
       resolve();
       pushDataToJsonFile();
+      addDataToDataBase();
+    });
+  })
+}
+
+function askForModify() {
+  rl.question('enter the title: ',(title)=>{
+    todoTitle = title;
+  
+    rl.question('enter the new title: ',(Newtitle)=>{
+      todoNewTitle = Newtitle;  
+      client.connect(err => {
+  dbo.collection("TodoList").replaceOne(
+    {"title": todoTitle},
+    {"title": todoNewTitle }
+  )
+  //commentaire à afficher
+    }); 
+  });
+});
+
+}
+
+function askForLog()
+{
+  return new Promise((resolve, reject) => {
+    rl.question('enter an email: ',(email)=>{
+      todoEmail = email;
+      resolve();
+      askForPassword();
+    });
+  })
+}
+
+function askForPassword() {
+  return new Promise((resolve, reject) => {
+    rl.question('enter a password: ',(Password)=>{
+      todoPassword = Password;
+      resolve();
+      // pushDataToJsonFile();
       addDataToDataBase();
     });
   })
@@ -139,28 +191,37 @@ function listAllTodoInJson() {
   }});
 }
 
-function removeTodo(title) {
-  fs.readFile('data.json','utf8', function readFileCallback(err, data){
-    if (err){
-        console.log(err);
-    } else {
-      todoList = JSON.parse(data);
-      titleInList = checkIfTitleInList(todoList, title);
-      if(!titleInList) {
-        console.log(chalk.red("Title not found !"));
-      }
-      else {
-        json = JSON.stringify(todoList);
-        fs.writeFile("data.json", json, (err) => {
-          if (err)
-            console.log(err);
-          else {
-            console.log();
-            console.log(chalk.red("Todo has benn removed successfully ✔\n"));
-          }
-        });
-      }
-  }});
+function removeTodo(title){
+
+  client.connect(err => {
+    var todo = {"title": title};
+    dbo.collection("TodoList").deleteOne(todo, function(err, res) {
+      if (err) throw err;
+      console.log("1 document deleted");
+      client.close();
+    });
+  });
+  // fs.readFile('data.json','utf8', function readFileCallback(err, data){
+  //   if (err){
+  //       console.log(err);
+  //   } else {
+  //     todoList = JSON.parse(data);
+  //     titleInList = checkIfTitleInList(todoList, title);
+  //     if(!titleInList) {
+  //       console.log(chalk.red("Title not found !"));
+  //     }
+  //     else {
+  //       json = JSON.stringify(todoList);
+  //       fs.writeFile("data.json", json, (err) => {
+  //         if (err)
+  //           console.log(err);
+  //         else {
+  //           console.log();
+  //           console.log(chalk.red("Todo has benn removed successfully ✔\n"));
+  //         }
+  //       });
+  //     }
+  // }});
 }
 
 function checkIfTitleInList(todoList, arr) {
@@ -236,7 +297,9 @@ function printStartProgramme(){
   console.log("----------------------------------")
   console.log(chalk.cyanBright("type info for details."));
   console.log(chalk.cyanBright("type add to add new todo"));
+  console.log(chalk.cyanBright("type modify to change a todo"));
   console.log(chalk.cyanBright("type remove to delete a todo"));
+  console.log(chalk.cyanBright("type signin to create an account"));
   console.log(chalk.cyanBright("type list to print all available todos"));
   console.log(chalk.cyanBright("type exit to close the application"));
   console.log("----------------------------------")
