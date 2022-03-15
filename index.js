@@ -124,26 +124,7 @@ function askForModify() {
   });
 }
 
-function askForLogin() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter your email: ', (email) => {
-      emailLog = email;
-      resolve();
-      askForLogPassword();
-    });
-  })
-}
 
-function askForLogPassword() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter your password: ', (Password) => {
-      passwordLog = Password;
-      resolve();
-      checkAccountInformation();
-
-    });
-  })
-}
 
 
 function askForSignup() {
@@ -175,26 +156,6 @@ function addNewAccountToDataBase() {
       client.close();
     });
   });
-}
-
-function checkAccountInformation() {
-  client.connect(err => {
-    dbo.collection("accounts").findOne({"email":emailLog, "password":passwordLog},function (err, rep) {
-      if (err) {
-        console.log(err);
-      } else {
-        if(rep == null)
-        {
-            console.log("Wrong email or password")
-        }
-        else{
-          console.log("authentification with success");
-          isConnected = true;
-        }
-      }
-    })
-  });
-  
 }
 
 function addDataToDataBase() {
