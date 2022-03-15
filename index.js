@@ -6,11 +6,14 @@ const readline = require('readline');
 const chalk = require("chalk");
 
 const fs = require('fs');
+const { exit } = require('process');
 var todoTitle = "";
 var todoSubject = "";
 var todoEmail = "";
 var todoPassword = "";
 var todoNewTitle = "";
+var emailLog = "";
+var passwordLog = "";
 
 var isConnected = false;
 
@@ -30,9 +33,12 @@ rl.on('line', (argument) => {
   switch (listArgument[0]) {
 
     case "add":
-      if(isConnected){
-      askForTitle();
-    }
+      if (isConnected) {
+        askForTitle();
+      }
+      else {
+       console.log(chalk.greenBright("You must login to add"));
+      }
       break;
 
     case "info":
@@ -56,7 +62,7 @@ rl.on('line', (argument) => {
 
     case "login":
       askForLogin();
-      break;  
+      break;
 
     case "exit":
       rl.close();
@@ -113,11 +119,31 @@ function askForModify() {
             }
             client.close();
           })
-    });
-  })
-});
+      });
+    })
+  });
 }
 
+function askForLogin() {
+  return new Promise((resolve, reject) => {
+    rl.question('enter your email: ', (email) => {
+      emailLog = email;
+      resolve();
+      askForLogPassword();
+    });
+  })
+}
+
+function askForLogPassword() {
+  return new Promise((resolve, reject) => {
+    rl.question('enter your password: ', (Password) => {
+      passwordLog = Password;
+      resolve();
+      checkAccountInformation();
+
+    });
+  })
+}
 
 
 function askForSignup() {
@@ -137,18 +163,38 @@ function askForPassword() {
       resolve();
       addNewAccountToDataBase();
       // pushDataToJsonFile();
-      
+
     });
   })
 }
 function addNewAccountToDataBase() {
   client.connect(err => {
-    dbo.collection("accounts").insertOne({"email":todoEmail, "password":todoPassword} , function (err, res) {
+    dbo.collection("accounts").insertOne({ "email": todoEmail, "password": todoPassword }, function (err, res) {
       if (err) throw err;
       console.log("Account created successfully");
       client.close();
     });
   });
+}
+
+function checkAccountInformation() {
+  client.connect(err => {
+    dbo.collection("accounts").findOne({"email":emailLog, "password":passwordLog},function (err, rep) {
+      if (err) {
+        console.log(err);
+      } else {
+        if(rep == null)
+        {
+            console.log("Wrong email or password")
+        }
+        else{
+          console.log("authentification with success");
+          isConnected = true;
+        }
+      }
+    })
+  });
+  
 }
 
 function addDataToDataBase() {
@@ -327,6 +373,7 @@ function printStartProgramme() {
   console.log(chalk.cyanBright("type modify to change a todo"));
   console.log(chalk.cyanBright("type remove to delete a todo"));
   console.log(chalk.cyanBright("type signup to create an account"));
+  console.log(chalk.cyanBright("type login to log to your account"));
   console.log(chalk.cyanBright("type list to print all available todos"));
   console.log(chalk.cyanBright("type exit to close the application"));
   console.log("----------------------------------")
