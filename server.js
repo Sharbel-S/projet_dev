@@ -32,8 +32,8 @@ app.get('/signInPage', (req, res) => {
 app.post('/signInPage', (req, res) => {
   account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
     if (response == false) {
-      res.locals.authenticated = false;
-
+      req.flash('info', 'Incorect username or password');
+      res.redirect('/signInPage');
       console.log("not found !");
     }
     else {
@@ -48,7 +48,6 @@ app.post('/signInPage', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  req.cookies.authenticated = false;
   req.session = null;
   res.redirect('/');
 });
