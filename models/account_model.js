@@ -17,3 +17,11 @@ exports.check_email_password_account = async function (email, password) {
     return accountExist;
 }
 
+exports.check_if_email_already_used = async function (email) {
+    var emailAlreadyUsed = false;
+    await client.connect();
+    var rep = await dbo.collection("accounts").findOne({ "email": email });
+    if (rep != null) emailAlreadyUsed = true;
+    return emailAlreadyUsed;
+}
+
