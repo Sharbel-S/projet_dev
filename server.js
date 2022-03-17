@@ -32,16 +32,25 @@ app.get('/signInPage', (req, res) => {
 app.post('/signInPage', (req, res) => {
   account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
     if (response == false) {
+      res.locals.authenticated = false;
+
       console.log("not found !");
     }
     else {
       console.log("found !");
       todo_model.getTodoList().then((response) => {
+      res.locals.authenticated = true;
       res.render('./homePage', {list:response})
       });
     }
   }
   );
+});
+
+app.get('/logout', (req, res) => {
+  req.cookies.authenticated = false;
+  req.session = null;
+  res.redirect('/');
 });
 
 
