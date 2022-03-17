@@ -1,7 +1,7 @@
-const express = require('express');
+var express = require('express');
 var mustache = require('mustache-express');
-const cookieSession = require('cookie-session');
-
+var cookieSession = require('cookie-session');
+var flash = require('express-flash');
 
 const app = express();
 var account_model = require('./models/account_model');
@@ -10,7 +10,7 @@ var todo_model = require('./models/todo_model');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(flash());
 
 app.engine('html', mustache());
 app.set('view engine', 'html');
