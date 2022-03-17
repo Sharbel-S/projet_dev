@@ -1,14 +1,24 @@
 const express = require('express');
 var mustache = require('mustache-express');
+const cookieSession = require('cookie-session');
+
+
 const app = express();
 var account_model = require('./models/account_model');
+var todo_model = require('./models/todo_model');
+
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
 app.engine('html', mustache());
 app.set('view engine', 'html');
 app.set('views', './views');
+
+app.use(cookieSession({
+  secret: 'mot-de-passe-du-cookie'
+}));
 
 
 app.get('/', function (req, res) {
@@ -26,9 +36,22 @@ app.post('/signInPage', (req, res) => {
     }
     else {
       console.log("found !");
+      todo_model.getTodoList().then((response) => {
+      res.render('./homePage', {list:response})
+      });
     }
   }
   );
 });
 
-app.listen(5000)
+
+
+app.post('/up', function(req, res){
+  var txt_folder_name = req.body;
+
+  console.log(txt_folder_name);
+  //Do other stuff
+})
+
+
+app.listen(4000)
