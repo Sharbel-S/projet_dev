@@ -29,18 +29,44 @@ app.get('/signInPage', (req, res) => {
   res.render('signInPage');
 });
 
-app.post('/signInPage', (req, res) => {
-  account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
+app.get('/signUpPage', (req, res) => {
+  res.render('signUpPage');
+})
+
+app.post('/signUp', (req, res) => {
+  account_model.check_if_email_already_used(req.body.email).then((response) => {
     if (response == false) {
-      req.flash('info', 'Incorect username or password');
-      res.redirect('/signInPage');
-      console.log("not found !");
+      if (req.body.password !== req.body.confirmPassword) {
+        req.flash('info', 'Password and confirmation are not the same');
+        res.redirect('/signUpPage');
+      }
+      else {
+        account_model.create_new_account(req.body.email, req.body.password).then((response) => {
+          if(response != null) {
+            res.locals.authenticated = true;
+            res.render('./homePage');
+          }
+        })
+      }
     }
     else {
-      console.log("found !");
+      req.flash('info', 'Email already used');
+      res.redirect('/signUpPage');
+    }
+  })
+})
+
+app.post('/signInPage', (req, res) => {
+  account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
+    if (response == null) {
+      req.flash('info', 'Incorect username or password');
+      res.redirect('/signInPage');
+    }
+    else {
+      console.log(response);
       todo_model.getTodoList().then((response) => {
-      res.locals.authenticated = true;
-      res.render('./homePage', {list:response})
+        res.locals.authenticated = true;
+        res.render('./homePage', { list: response })
       });
     }
   }
@@ -54,7 +80,7 @@ app.get('/logout', (req, res) => {
 
 
 
-app.post('/up', function(req, res){
+app.post('/up', function (req, res) {
   var txt_folder_name = req.body;
 
   console.log(txt_folder_name);
