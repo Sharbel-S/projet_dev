@@ -9,12 +9,11 @@ var dbo = client.db("Todos");
 
 
 exports.check_email_password_account = async function (email, password) {
-    var accountExist = false;
     await client.connect();
-    var rep = await dbo.collection("accounts").findOne({ "email": email, "password": password });
-    if (rep != null) accountExist = true;
+    var rep = await dbo.collection("accounts").findOne({ "emaisl": email, "password": password });
     client.close();
-    return accountExist;
+    if (rep != null) return rep._id.toString();
+    return null;
 }
 
 exports.check_if_email_already_used = async function (email) {
@@ -23,5 +22,11 @@ exports.check_if_email_already_used = async function (email) {
     var rep = await dbo.collection("accounts").findOne({ "email": email });
     if (rep != null) emailAlreadyUsed = true;
     return emailAlreadyUsed;
+}
+
+exports.create_new_account = async function (email, password) {
+    await client.connect();
+    var rep = await dbo.collection("accounts").insertOne({ "email": email, "password": password });
+    return rep;
 }
 
