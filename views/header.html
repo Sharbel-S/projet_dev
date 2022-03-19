@@ -36,14 +36,16 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            {{#authenticated}}
+            <a class="nav-link active" aria-current="page" href="/homePage">Home</a>
+            {{/authenticated}}
           </li>
         </ul>
       </div>
       {{^authenticated}}
       <div class="collapse navbar-collapse justify-content-end">
         <a href="/signInPage" class="btn btn-primary mr-1">Sign in</a> &nbsp;
-        <a class="btn btn-primary mr-2">Sign up</a>
+        <a href="/signUpPage" class="btn btn-primary mr-2">Sign up</a>
       </div>
       {{/authenticated}}
 
