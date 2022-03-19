@@ -16,6 +16,10 @@ app.engine('html', mustache());
 app.set('view engine', 'html');
 app.set('views', './views');
 
+
+
+
+
 app.use(cookieSession({
   secret: 'mot-de-passe-du-cookie'
 }));
@@ -35,14 +39,14 @@ app.get('/signUpPage', (req, res) => {
 
 app.post('/signUp', (req, res) => {
   account_model.check_if_email_already_used(req.body.email).then((response) => {
-    if (response == false) {
+    if (response == null) {
       if (req.body.password !== req.body.confirmPassword) {
         req.flash('info', 'Password and confirmation are not the same');
         res.redirect('/signUpPage');
       }
       else {
         account_model.create_new_account(req.body.email, req.body.password).then((response) => {
-          if(response != null) {
+          if (response != null) {
             res.locals.authenticated = true;
             res.render('./homePage');
           }
@@ -63,9 +67,9 @@ app.post('/signInPage', (req, res) => {
       res.redirect('/signInPage');
     }
     else {
-      console.log(response);
       todo_model.getTodoList().then((response) => {
         res.locals.authenticated = true;
+        req.session.email = req.body.email;
         res.render('./homePage', { list: response })
       });
     }
@@ -73,19 +77,35 @@ app.post('/signInPage', (req, res) => {
   );
 });
 
+
+
 app.get('/logout', (req, res) => {
   req.session = null;
   res.redirect('/');
 });
 
 
+app.use(is_authenticated);
 
-app.post('/up', function (req, res) {
-  var txt_folder_name = req.body;
-
-  console.log(txt_folder_name);
-  //Do other stuff
-})
+app.get('/addNewTodo', is_authenticated,(req, res) => {
+  console.log("local ", res.locals);
+  res.render('addNewTodo');
+});
 
 
-app.listen(4000)
+app.post('/addTodo', (req, res) => {
+  todo_model.insert_new_todo(req.session.email, req.body).then((response) => {
+    console.log(response);
+
+  })
+});
+
+function is_authenticated(req, res, next) {
+  if (req.session.email !== undefined) {
+    res.locals.authenticated = true;
+    return next();
+  }
+  res.status(401).send('Authentication required');
+}
+
+app.listen(5000)
