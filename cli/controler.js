@@ -43,3 +43,17 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
       });
     });
   }
+
+
+  exports.listAllTodoInDataBase = function() {
+    client.connect(err => {
+      dbo.collection("TodoList").find({}).toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(result);
+        }
+      })
+    });
+  }
+  
