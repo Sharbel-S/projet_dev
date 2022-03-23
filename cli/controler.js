@@ -56,4 +56,16 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
       })
     });
   }
+
+  exports.removeTodoFromDataBase = function(title) {
+    client.connect(err => {
+      var dataToRemove = { "title": title };
+      dbo.collection("TodoList").deleteOne(dataToRemove, function (err, res) {
+        if (err) throw err;
+        console.log("1 document removed");
+        client.close();
+      });
+    });
+  }
+  
   
