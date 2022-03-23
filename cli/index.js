@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion, Db } = require('mongodb');
 const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
+var view = require('./view');
 const readline = require('readline');
 const chalk = require("chalk");
 
@@ -22,7 +23,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-printStartProgramme();
+
 createJsonFileIfDontExist();
 
 
@@ -42,9 +43,9 @@ rl.on('line', (argument) => {
       break;
 
     case "info":
-      printAddDetails();
-      printRemoveDetails();
-      printListeDetails();
+      view.printAddDetails();
+      view.printRemoveDetails();
+      view.printListeDetails();
       break;
 
     case "list":
@@ -76,6 +77,8 @@ rl.on('line', (argument) => {
       console.log(chalk.red('Commande not found, type info for more information'));
   }
 });
+
+view.printStartProgramme();
 
 
 function askForTitle() {
@@ -125,8 +128,6 @@ function askForModify() {
 }
 
 
-
-
 function askForSignup() {
   return new Promise((resolve, reject) => {
     rl.question('enter an email: ', (email) => {
@@ -148,6 +149,8 @@ function askForPassword() {
     });
   })
 }
+
+
 function addNewAccountToDataBase() {
   client.connect(err => {
     dbo.collection("accounts").insertOne({ "email": todoEmail, "password": todoPassword }, function (err, res) {
@@ -157,6 +160,7 @@ function addNewAccountToDataBase() {
     });
   });
 }
+
 
 function addDataToDataBase() {
   client.connect(err => {
@@ -168,6 +172,7 @@ function addDataToDataBase() {
     });
   });
 }
+
 
 function pushDataToJsonFile() {
   fs.readFile('data.json', 'utf8', function readFileCallback(err, dataFromJson) {
@@ -189,6 +194,7 @@ function pushDataToJsonFile() {
   });
 }
 
+
 function listAllTodoInDataBase() {
   client.connect(err => {
     dbo.collection("TodoList").find({}).toArray(function (err, result) {
@@ -200,6 +206,7 @@ function listAllTodoInDataBase() {
     })
   });
 }
+
 
 function listAllTodoInJson() {
   fs.readFile('data.json', 'utf8', function readFileCallback(err, data) {
@@ -224,6 +231,7 @@ function listAllTodoInJson() {
     }
   });
 }
+
 
 function removeTodo(title) {
 
@@ -258,6 +266,7 @@ function removeTodo(title) {
   // }});
 }
 
+
 function checkIfTitleInList(todoList, arr) {
   var titleInList = 0;
   for (var i = 0; i < todoList.length; i++) {
@@ -270,6 +279,7 @@ function checkIfTitleInList(todoList, arr) {
   return titleInList;
 }
 
+
 function askForTitleToRemove() {
   return new Promise((resolve, reject) => {
     rl.question('enter the title of the todo you want to delete: ', (title) => {
@@ -279,6 +289,7 @@ function askForTitleToRemove() {
     });
   })
 }
+
 
 function removeTodoFromDataBase(title) {
   client.connect(err => {
@@ -291,54 +302,7 @@ function removeTodoFromDataBase(title) {
   });
 }
 
-function printAddDetails() {
-  console.log("----------------------------------");
-  console.log(chalk.yellow("How to add new todo: "))
-  console.log();
-  console.log(("1- write: add"));
-  console.log(("2- enter the title of your todo and press Enter"));
-  console.log(("3- enter the subject of your todo and press Enter"));
-  console.log();
-  console.log(chalk.green("Well done! you have juste added a new todo to your list !"));
-  console.log("----------------------------------");
-}
 
-function printRemoveDetails() {
-  console.log("----------------------------------");
-  console.log(chalk.yellow("How to remove a todo: "))
-  console.log();
-  console.log(("1- write: remove"));
-  console.log(("2- enter the title of your todo that you want to remove and press Enter"));
-  console.log();
-  console.log(chalk.green("Well done! you have juste removed your todo!"));
-  console.log("----------------------------------");
-}
-
-function printListeDetails() {
-  console.log("----------------------------------");
-  console.log(chalk.yellow("How to print the list of todos: "))
-  console.log();
-  console.log(("1- write: list"));
-  console.log();
-  console.log(chalk.green("Well done! you have juste printed all your todos!"));
-  console.log("----------------------------------");
-}
-
-
-function printStartProgramme() {
-  console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
-  console.log("");
-  console.log("----------------------------------")
-  console.log(chalk.cyanBright("type info for details."));
-  console.log(chalk.cyanBright("type add to add new todo"));
-  console.log(chalk.cyanBright("type modify to change a todo"));
-  console.log(chalk.cyanBright("type remove to delete a todo"));
-  console.log(chalk.cyanBright("type signup to create an account"));
-  console.log(chalk.cyanBright("type login to log to your account"));
-  console.log(chalk.cyanBright("type list to print all available todos"));
-  console.log(chalk.cyanBright("type exit to close the application"));
-  console.log("----------------------------------")
-}
 
 function createJsonFileIfDontExist() {
   // the 'a' parametre will check if the file already existe, if not it will create one
