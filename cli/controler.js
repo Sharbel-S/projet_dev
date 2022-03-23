@@ -16,3 +16,30 @@ exports.addDataToDataBase = function(todoTitle,todoSubject) {
       });
     });
   }
+
+exports.test2 = function(todoTitle, todoNewTitle) {
+    client.connect(err => {
+    dbo.collection("TodoList").replaceOne(
+      { "title": todoTitle },
+      { "title": todoNewTitle }
+      , function (err) {
+        if (err) {
+          console.log(chalk.red("something went wrong, please try again."));
+        } else {
+          console.log();
+          console.log(chalk.green("Todo has been modified successfully ✔\n"));
+        }
+        client.close();
+      })
+  });
+}
+
+exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
+    client.connect(err => {
+      dbo.collection("accounts").insertOne({ "email": todoEmail, "password": todoPassword }, function (err, res) {
+        if (err) throw err;
+        console.log("Account created successfully");
+        client.close();
+      });
+    });
+  }
