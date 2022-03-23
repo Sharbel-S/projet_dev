@@ -9,6 +9,7 @@ var todoEmail = "";
 var todoPassword = "";
 var emailLog = "";
 var passwordLog = "";
+var idUser = "";
 var isConnected = false;
 
 exports.printStartProgramme = function () {
@@ -165,7 +166,8 @@ function askForPasswordToLogin(rl) {
             passwordLog = password;
             resolve();
             controler.checkEmailPasswordAccount(emailLog, passwordLog).then((response) => {
-                if (response == true) {
+                if (response != null) {
+                    idUser = response;
                     isConnected = true;
                 }
             });
