@@ -1,5 +1,6 @@
 "use strict"
 const chalk = require("chalk");
+const { response } = require("express");
 var controler = require('./controler.js');
 var todoTitle = "";
 var todoSubject = "";
@@ -8,6 +9,7 @@ var todoEmail = "";
 var todoPassword = "";
 var emailLog = "";
 var passwordLog = "";
+var isConnected = false;
 
 exports.printStartProgramme = function(){
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
@@ -58,13 +60,19 @@ exports.printAddDetails = function() {
   }
 
   exports.askForTitle = function(rl) {
-    return new Promise((resolve, reject) => {
-      rl.question('enter a title: ', (arr) => {
-        todoTitle = arr;
-        resolve();
-        askForSubject(rl);
-      });
-    })
+      if(isConnected){
+        return new Promise((resolve, reject) => {
+            rl.question('enter a title: ', (arr) => {
+              todoTitle = arr;
+              resolve();
+              askForSubject(rl);
+            });
+          })
+      }
+      else{
+          console.log("You must to login !");
+      }
+    
   }
   
   
@@ -80,6 +88,7 @@ exports.printAddDetails = function() {
   
 
   exports.askForModify = function(rl) {
+    if(isConnected){
     rl.question('enter the title: ', (title) => {
       todoTitle = title;
   
@@ -88,6 +97,10 @@ exports.printAddDetails = function() {
         controler.modifyActualTitle(todoTitle, todoNewTitle);
       })
     });
+    }
+    else {
+        console.log("You must to login !");
+    }
   }
   
   
@@ -115,9 +128,34 @@ exports.printAddDetails = function() {
   exports.askForTitleToRemove = function(rl) {
     return new Promise((resolve, reject) => {
       rl.question('enter the title of the todo you want to delete: ', (title) => {
-        controler.removeTodoFromDataBase(title);
-        controler.removeTodo(title);
         resolve();
+        controler.removeTodoFromDataBase(title);
+    
       });
     })
+  }
+
+  exports.askForEmailToLogin = function(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter your email: ', (email) => {
+          emailLog = email;
+          resolve();
+          askForPasswordToLogin(rl);
+        });
+      })
+  }
+
+
+    function askForPasswordToLogin (rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter your password: ', (password) => {
+         passwordLog = password;
+          resolve();
+        controler.checkEmailPasswordAccount(emailLog,passwordLog).then((response) => {
+            if(response == true){
+                isConnected = true;
+            }
+        });
+        });
+      })
   }
