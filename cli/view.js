@@ -4,6 +4,8 @@ var controler = require('./controler.js');
 var todoTitle = "";
 var todoSubject = "";
 var todoNewTitle = "";
+var todoEmail = "";
+var todoPassword = "";
 
 exports.printStartProgramme = function(){
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
@@ -92,7 +94,7 @@ exports.printAddDetails = function() {
       rl.question('enter an email: ', (email) => {
         todoEmail = email;
         resolve();
-        askForPassword();
+        askForPassword(rl);
       });
     })
   }
@@ -102,8 +104,7 @@ exports.printAddDetails = function() {
       rl.question('enter a password: ', (Password) => {
         todoPassword = Password;
         resolve();
-        addNewAccountToDataBase();
-  
+        controler.addNewAccountToDataBase(todoEmail, todoPassword);
       });
     })
   }
