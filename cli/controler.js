@@ -68,14 +68,21 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     });
   }
   
- exports.removeTodo = function(title) {
 
-    client.connect(err => {
-      var todo = { "title": title };
-      dbo.collection("TodoList").deleteOne(todo, function (err, res) {
-        if (err) throw err;
-        console.log("1 document deleted");
-        client.close();
-      });
-    });
+  exports.checkEmailPasswordAccount = async function (emailLog,passwordLog) {
+
+    await client.connect();
+    var rep = await dbo.collection("accounts").findOne({"email":emailLog , "password":passwordLog});
+    client.close();
+    if(rep != null){
+
+        console.log("Connected with success !");
+        return true;
+    }
+    else {
+        console.log("Username or Password incorrect !");
+        return false;
+    }
+
+
   }
