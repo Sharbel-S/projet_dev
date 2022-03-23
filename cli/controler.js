@@ -77,11 +77,11 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     if(rep != null){
 
         console.log("Connected with success !");
-        return true;
+        return rep._id.toString();
     }
     else {
         console.log("Username or Password incorrect !");
-        return false;
+        return null;
     }
 
 
@@ -100,3 +100,4 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     }
 
   }
+
