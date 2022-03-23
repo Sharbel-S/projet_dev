@@ -109,3 +109,13 @@ exports.printAddDetails = function() {
     })
   }
   
+
+  exports.askForTitleToRemove = function(rl) {
+    return new Promise((resolve, reject) => {
+      rl.question('enter the title of the todo you want to delete: ', (title) => {
+        controler.removeTodoFromDataBase(title);
+        controler.removeTodo(title);
+        resolve();
+      });
+    })
+  }
