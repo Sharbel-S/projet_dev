@@ -86,3 +86,17 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
 
 
   }
+
+  exports.checkIfTitleExist = async function (title){
+    await client.connect();
+    var rep = await dbo.collection("TodoList").findOne({"title":title});
+    client.close();
+    if(rep != null){
+
+        return true;
+    }
+    else {
+        return false;
+    }
+
+  }
