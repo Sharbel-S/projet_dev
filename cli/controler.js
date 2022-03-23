@@ -17,7 +17,7 @@ exports.addDataToDataBase = function(todoTitle,todoSubject) {
     });
   }
 
-exports.test2 = function(todoTitle, todoNewTitle) {
+exports.modifyActualTitle = function(todoTitle, todoNewTitle) {
     client.connect(err => {
     dbo.collection("TodoList").replaceOne(
       { "title": todoTitle },

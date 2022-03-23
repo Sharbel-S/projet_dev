@@ -6,6 +6,8 @@ var todoSubject = "";
 var todoNewTitle = "";
 var todoEmail = "";
 var todoPassword = "";
+var emailLog = "";
+var passwordLog = "";
 
 exports.printStartProgramme = function(){
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
@@ -83,7 +85,7 @@ exports.printAddDetails = function() {
   
       rl.question('enter the new title: ', (Newtitle) => {
         todoNewTitle = Newtitle;
-        controler.test2(todoTitle, todoNewTitle);
+        controler.modifyActualTitle(todoTitle, todoNewTitle);
       })
     });
   }
