@@ -8,15 +8,13 @@ const chalk = require("chalk");
 
 const fs = require('fs');
 const { exit } = require('process');
-var todoTitle = "";
-var todoSubject = "";
 var todoEmail = "";
 var todoPassword = "";
 var todoNewTitle = "";
 var emailLog = "";
 var passwordLog = "";
 
-var isConnected = false;
+var isConnected = true;
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -35,7 +33,7 @@ rl.on('line', (argument) => {
 
     case "add":
       if (isConnected) {
-        askForTitle();
+        view.askForTitle(rl);
       }
       else {
        console.log(chalk.greenBright("You must login to add"));
@@ -80,28 +78,6 @@ rl.on('line', (argument) => {
 
 view.printStartProgramme();
 
-
-function askForTitle() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter a title: ', (arr) => {
-      todoTitle = arr;
-      resolve();
-      askForSubject();
-    });
-  })
-}
-
-
-function askForSubject() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter a subject: ', (inputSubject) => {
-      todoSubject = inputSubject;
-      resolve();
-      pushDataToJsonFile();
-      addDataToDataBase();
-    });
-  })
-}
 
 function askForModify() {
   rl.question('enter the title: ', (title) => {
@@ -161,17 +137,6 @@ function addNewAccountToDataBase() {
   });
 }
 
-
-function addDataToDataBase() {
-  client.connect(err => {
-    var newData = { "title": todoTitle, "subject": todoSubject };
-    dbo.collection("TodoList").insertOne(newData, function (err, res) {
-      if (err) throw err;
-      console.log("1 document inserted");
-      client.close();
-    });
-  });
-}
 
 
 function pushDataToJsonFile() {
