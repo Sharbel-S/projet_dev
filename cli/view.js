@@ -1,5 +1,9 @@
 "use strict"
 const chalk = require("chalk");
+var controler = require('./controler.js');
+var todoTitle = "";
+var todoSubject = "";
+var todoNewTitle = "";
 
 exports.printStartProgramme = function(){
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
@@ -48,3 +52,59 @@ exports.printAddDetails = function() {
     console.log(chalk.green("Well done! you have juste printed all your todos!"));
     console.log("----------------------------------");
   }
+
+  exports.askForTitle = function(rl) {
+    return new Promise((resolve, reject) => {
+      rl.question('enter a title: ', (arr) => {
+        todoTitle = arr;
+        resolve();
+        askForSubject(rl);
+      });
+    })
+  }
+  
+  
+  function askForSubject(rl) {
+    return new Promise((resolve, reject) => {
+      rl.question('enter a subject: ', (inputSubject) => {
+        todoSubject = inputSubject;
+        resolve();
+        controler.addDataToDataBase(todoTitle,todoSubject);
+      });
+    })
+  }
+  
+
+  exports.askForModify = function(rl) {
+    rl.question('enter the title: ', (title) => {
+      todoTitle = title;
+  
+      rl.question('enter the new title: ', (Newtitle) => {
+        todoNewTitle = Newtitle;
+        controler.test2(todoTitle, todoNewTitle);
+      })
+    });
+  }
+  
+  
+ exports.askForSignup = function(rl) {
+    return new Promise((resolve, reject) => {
+      rl.question('enter an email: ', (email) => {
+        todoEmail = email;
+        resolve();
+        askForPassword();
+      });
+    })
+  }
+  
+  function askForPassword(rl) {
+    return new Promise((resolve, reject) => {
+      rl.question('enter a password: ', (Password) => {
+        todoPassword = Password;
+        resolve();
+        addNewAccountToDataBase();
+  
+      });
+    })
+  }
+  

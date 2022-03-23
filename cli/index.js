@@ -10,7 +10,6 @@ const fs = require('fs');
 const { exit } = require('process');
 var todoEmail = "";
 var todoPassword = "";
-var todoNewTitle = "";
 var emailLog = "";
 var passwordLog = "";
 
@@ -68,7 +67,7 @@ rl.on('line', (argument) => {
       break;
 
     case "modify":
-      askForModify();
+      view.askForModify(rl);
       break;
 
     default:
@@ -77,54 +76,6 @@ rl.on('line', (argument) => {
 });
 
 view.printStartProgramme();
-
-
-function askForModify() {
-  rl.question('enter the title: ', (title) => {
-    todoTitle = title;
-
-    rl.question('enter the new title: ', (Newtitle) => {
-      todoNewTitle = Newtitle;
-      client.connect(err => {
-        dbo.collection("TodoList").replaceOne(
-          { "title": todoTitle },
-          { "title": todoNewTitle }
-          , function (err) {
-            if (err) {
-              console.log(chalk.red("something went wrong, please try again."));
-            } else {
-              console.log();
-              console.log(chalk.green("Todo has been modified successfully ✔\n"));
-            }
-            client.close();
-          })
-      });
-    })
-  });
-}
-
-
-function askForSignup() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter an email: ', (email) => {
-      todoEmail = email;
-      resolve();
-      askForPassword();
-    });
-  })
-}
-
-function askForPassword() {
-  return new Promise((resolve, reject) => {
-    rl.question('enter a password: ', (Password) => {
-      todoPassword = Password;
-      resolve();
-      addNewAccountToDataBase();
-      // pushDataToJsonFile();
-
-    });
-  })
-}
 
 
 function addNewAccountToDataBase() {
@@ -229,19 +180,6 @@ function removeTodo(title) {
   //       });
   //     }
   // }});
-}
-
-
-function checkIfTitleInList(todoList, arr) {
-  var titleInList = 0;
-  for (var i = 0; i < todoList.length; i++) {
-    if (todoList[i].title == arr) {
-      titleInList = 1;
-      todoList.splice(i);
-      break;
-    }
-  }
-  return titleInList;
 }
 
 
