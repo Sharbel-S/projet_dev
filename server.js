@@ -12,12 +12,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(flash());
 
+//expose public directory
+app.use(express.static('public'));
+
+
 app.engine('html', mustache());
 app.set('view engine', 'html');
 app.set('views', './views');
-
-
-
 
 
 app.use(cookieSession({
@@ -70,14 +71,13 @@ app.post('/signInPage', (req, res) => {
       todo_model.getTodoList().then((response) => {
         res.locals.authenticated = true;
         req.session.email = req.body.email;
-        res.render('./homePage', { list: response })
+        var groupList = todo_model.get_all_groups_for_user(req.body.email);
+        res.render('./homePage', { list: response, groupList})
       });
     }
   }
   );
 });
-
-
 
 app.get('/logout', (req, res) => {
   req.session = null;
@@ -87,8 +87,11 @@ app.get('/logout', (req, res) => {
 
 app.use(is_authenticated);
 
+app.get('/homePage', is_authenticated,(req, res) => {
+  res.render('homePage');
+});
+
 app.get('/addNewTodo', is_authenticated,(req, res) => {
-  console.log("local ", res.locals);
   res.render('addNewTodo');
 });
 
