@@ -21,7 +21,7 @@ rl.on('line', (argument) => {
 
     case "add":
       
-        view.askForTitle(rl);
+        view.askForAddTheTitle(rl);
       
       break;
 
@@ -53,7 +53,7 @@ rl.on('line', (argument) => {
       break;
 
     case "modify":
-      view.askForModify(rl);
+      view.askForColumnToModify(rl);
       break;
 
     case "group":
