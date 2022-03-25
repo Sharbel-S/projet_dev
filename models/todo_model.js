@@ -13,22 +13,22 @@ exports.getTodoList = async function () {
     return rep;
 }
 
-exports.insert_new_todo = async function (email, data) {
+exports.insert_new_todo = async function (title, date, details, group) {
     await client.connect();
-    await dbo.collection("tasks_groups").updateOne({ "email": email, "group": data.groupSelect }, { $set: {} }, { upsert: true });
-    await dbo.collection("tasks").updateOne({ "group": data.groupSelect }, {
+    await dbo.collection("tasks").updateOne({ "group": group }, {
         $push: {
             "tasks": {
-                "title": data.title,
-                "date": data.dateLimit,
+                "title": title,
+                "date": date,
                 "status": "todo",
-                "details": data.description
+                "details": details
             }
         }
     }, { upsert: true });
 
     client.close();
 }
+
 
 exports.get_all_groups_for_user = async function (userEmail) {
     await client.connect();
