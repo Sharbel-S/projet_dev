@@ -35,6 +35,40 @@ exports.modifyActualTitle = function(todoTitle, todoNewTitle) {
       })
   });
 }
+exports.modifyActualDate = function(todoDate, todoNewDate) {
+  client.connect(err => {
+  dbo.collection("TodoList").replaceOne(
+    { "title": todoDate },
+    { "title": todoNewDate }
+    , function (err) {
+      if (err) {
+        console.log(chalk.red("something went wrong, please try again."));
+      } else {
+        console.log();
+        console.log(chalk.green("Date has been modified successfully ✔\n"));
+      }
+      client.close();
+    })
+});
+}
+
+exports.modifyActualDetails = function(todoDetails, todoNewDetails) {
+  client.connect(err => {
+  dbo.collection("TodoList").replaceOne(
+    { "title": todoDetails },
+    { "title": todoNewDetails }
+    , function (err) {
+      if (err) {
+        console.log(chalk.red("something went wrong, please try again."));
+      } else {
+        console.log();
+        console.log(chalk.green("Details has been modified successfully ✔\n"));
+      }
+      client.close();
+    })
+});
+}
+
 
 exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     client.connect(err => {
