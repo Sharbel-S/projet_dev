@@ -2,11 +2,15 @@
 const chalk = require("chalk");
 const { response } = require("express");
 var controler = require('./controler.js');
+var todo_model = require('../models/todo_model');
 var todoTitle = "";
-var todoDescription = "";
+var todoDetails = "";
 var todoNewTitle = "";
+var todoNewDate = "";
+var todoNewDetails = "";
 var todoEmail = "";
 var todoPassword = "";
+var todoDate = "";
 var emailLog = "";
 var passwordLog = "";
 var idUser = "";
@@ -62,7 +66,7 @@ exports.printListeDetails = function () {
     console.log("----------------------------------");
 }
 
-exports.askForTitle = function (rl) {
+exports.askForAddTheTitle = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
             return new Promise((resolve, reject) => {
@@ -88,9 +92,21 @@ exports.askForTitle = function (rl) {
 function askForDescription(rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter a Description: ', (inputDescription) => {
-            todoDescription = inputDescription;
+            todoDetails = inputDescription;
             resolve();
-            controler.addDataToDataBase(todoTitle, todoDescription);
+            askForDateToAdd(rl);
+        });
+    })
+}
+
+function askForDateToAdd(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter a Date: ', (inputDate) => {
+            todoDate = inputDate;
+            resolve();
+            todo_model.insert_new_todo(todoTitle, todoDate, todoDetails, groupSelected).then((response) => {
+                console.log("Data inserted successfully !")
+            })
         });
     })
 }
@@ -98,7 +114,7 @@ function askForDescription(rl) {
 
 exports.askForModify = function (rl) {
     if (isConnected) {
-        if(isGroupSelected){
+        if (isGroupSelected) {
             rl.question('enter the title: ', (title) => {
                 todoTitle = title;
                 controler.checkIfTitleExist(title).then((response) => {
@@ -112,20 +128,88 @@ exports.askForModify = function (rl) {
                         console.log("Title doesn't exit !");
                     }
                 });
-    
-    
+
+
             });
         }
-        else{
+        else {
             console.log("You must choose a group !")
         }
-        
+
     }
     else {
         console.log("You must to login !");
     }
 }
 
+exports.askForModifyTheDate = function (rl) {
+    if (isConnected) {
+        if (isGroupSelected) {
+            rl.question('enter the date: ', (date) => {
+                todoDate = date;
+                rl.question('enter the new date: ', (NewDate) => {
+                    todoNewDate = newDate;
+                    controler.modifyActualDate(todoDate, todoNewDate);
+                })
+            });
+}
+else {
+    console.log("You must choose a group !")
+}
+
+}
+else {
+console.log("You must to login !");
+}
+}
+
+exports.askForModifyTheDetails = function (rl) {
+    if (isConnected) {
+        if (isGroupSelected) {
+            rl.question('enter the details: ', (details) => {
+                todoDetails = details;
+                rl.question('enter the new details: ', (Newdetails) => {
+                    todoNewDetails = Newdetails;
+                    controler.modifyActualDetails(todoDetails, todoNewDetails);
+                })
+            });
+}
+else {
+    console.log("You must choose a group !")
+}
+
+}
+else {
+console.log("You must to login !");
+}
+}
+
+exports.askForColumnToModify = function (rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the column you want to modify :\n -title\n  -date\n  -details\n ', (response) => {
+            resolve();
+            switch (response) {
+                case "Title":
+                    askForModify(rl);
+                    break;
+
+                case "Date":
+                    askForModifyTheDate(rl);
+                    break;
+
+                case "Details":
+                    askForModifyTheDetails(rl);
+                    break;
+
+                default:
+                    console.log(chalk.red('Column not found'));
+
+            }
+
+
+        });
+    })
+}
 
 exports.askForSignup = function (rl) {
     return new Promise((resolve, reject) => {
