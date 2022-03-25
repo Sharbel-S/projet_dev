@@ -36,11 +36,12 @@ ss
                 <div class="card-body text-dark">
                     <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}" style="text-decoration:none">{{group}}</a> </h3>
                     <p class="card-text">
+                        Id : {{_id}} <br>
                         Nombre de tache total: 20 <br>
                         Nombre de tache à faire: 15
                     </p>
                 </div>
-                <div class="card-footer bg-transparent text-muted">created 03/02/1998</div>
+                <div class="card-footer bg-transparent text-muted">created {{creationDate}}</div>
             </div>
             {{/list}}
         </div>
@@ -66,11 +67,11 @@ ss
                 <form id="modal-modify">
                     <div class="mb-3">
                         <label for="groupInputModify" class="col-form-label">Group name:</label>
-                        <input type="text" class="form-control" id="groupInputModify">
+                        <input type="text" class="form-control" id="groupInputName">
                     </div>
 
                     <label class="col-form-label">Group color:</label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select  id="colorGroupSelect" class="form-select" aria-label="Default select example">
                         <option selected>Chose a color</option>
                         <option class="text-danger" value="red">Red</option>
                         <option class="text-primary" value="Blue">Blue</option>
@@ -83,7 +84,7 @@ ss
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button id="modifyButton" form="modal-details" class="btn btn-success ">Ajouter</button>
+                        <button id="submotNewTodoGroupButton" form="modal-details" class="btn btn-success ">Ajouter</button>
                     </div>
                 </form>
             </div>
