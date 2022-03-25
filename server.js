@@ -64,22 +64,34 @@ app.post('/signUp', (req, res) => {
 })
 
 app.post('/signInPage', (req, res) => {
-  account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
-    if (response == null) {
+  account_model.check_email_password_account(req.body.email, req.body.password).then((responseId) => {
+    if (responseId == null) {
       req.flash('info', 'Incorect username or password');
       res.redirect('/signInPage');
     }
     else {
-      todo_model.get_all_groups_for_user(req.body.email).then((response) => {
-        res.locals.authenticated = true;
-        req.session.email = req.body.email;
+      req.session.userId = responseId;
+      res.locals.authenticated = true;
+      todo_model.get_all_groups_for_user(responseId).then((response) => {
         //var groupList = todo_model.get_all_groups_for_user(req.body.email);
-        console.log("list ", response);
+        console.log(response);
         res.render('./mainPage', { list: response })
       });
     }
   }
   );
+});
+
+
+app.post('/addNewTodoGroup', (req, res) => {
+  todo_model.add_new_todo_group(req.session.userId, req.body.group, req.body.color).then((response) => {
+    if (response) {
+      res.send(200);
+    }
+    else {
+      res.send(404);
+    }
+  })
 });
 
 /*
