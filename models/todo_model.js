@@ -4,6 +4,8 @@ const { MongoClient, ServerApiVersion, Db } = require('mongodb');
 const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/accountExist?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
+var today = new Date();
+var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
 
 
 exports.getTodoList = async function () {
@@ -32,14 +34,14 @@ exports.insert_new_todo = async function (title, date, details, group) {
 
 exports.get_all_groups_for_user = async function (userEmail) {
     await client.connect();
-    var rep = await dbo.collection("tasks_groups").find({ "email": userEmail }).project({ "group": 1 ,"color":1, "_id": 0 }).toArray();
+    var rep = await dbo.collection("tasks_groups").find({ "userId": userEmail }).project({ "group": 1, "color": 1, "creationDate": 1 , "_id": 1 }).toArray();
     client.close();
     return rep;
 }
 
 exports.get_all_tasks_of_group = async function (groupId) {
     await client.connect();
-    var rep = await dbo.collection("tasks").find({"group": groupId }).toArray();
+    var rep = await dbo.collection("tasks").find({ "group": groupId }).toArray();
     client.close();
     return rep;
 }
@@ -47,7 +49,17 @@ exports.get_all_tasks_of_group = async function (groupId) {
 
 exports.delete_selected_todo = async function (id) {
     await client.connect();
-    var rep = await dbo.collection("tasks").deleteOne({ "_id": id});
-    console.log(rep);
+    var rep = await dbo.collection("tasks").deleteOne({ "_id": id });
     client.close();
+}
+
+exports.change_todo_title = async function () {
+}
+
+exports.add_new_todo_group = async function (userId, groupName, groupColor) {
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").insertOne({ "userId": userId, "group": groupName, "color": groupColor, "creationDate": date });
+    console.log(date);
+    client.close();
+    return rep;
 }
