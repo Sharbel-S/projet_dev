@@ -26,17 +26,20 @@ ss
     <div class="row">
         <div class="col">
             {{#list}}
-            <div class="card border-{{color}} mb-3" style="max-width: 18rem;">
+            <div id="{{_id}}" class="card border-{{color}} mb-3" style="max-width: 18rem;">
                 <div class="card-header">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="button" class="btn btn-outline-warning btn-sm">✏️</button>
-                        <button value="{{_id}}" type="button" class="btn btn-outline-danger btn-sm deleteGroupButton" >🗑️</button>
+                        <button value="{{_id}}" type="button"
+                            class="btn btn-outline-warning btn-sm editGroupButton">✏️</button>
+                        <button value="{{_id}}" type="button"
+                            class="btn btn-outline-danger btn-sm deleteGroupButton">🗑️</button>
                     </div>
                 </div>
                 <div class="card-body text-dark">
-                    <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}" style="text-decoration:none">{{group}}</a> </h3>
+                    <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}"
+                            style="text-decoration:none">{{group}}</a> </h3>
                     <p class="card-text">
-                         
+
                         Nombre de tache total: 20 <br>
                         Nombre de tache à faire: 15 <br>
                     </p>
@@ -49,7 +52,7 @@ ss
             C
         </div>
         <div class="col">
-                C
+            C
         </div>
     </div>
 </div>
@@ -71,20 +74,21 @@ ss
                     </div>
 
                     <label class="col-form-label">Group color:</label>
-                    <select  id="colorGroupSelect" class="form-select" aria-label="Default select example">
+                    <select id="colorGroupSelect" class="form-select" aria-label="Default select example">
                         <option selected>Chose a color</option>
-                        <option class="text-danger" value="red">Red</option>
-                        <option class="text-primary" value="Blue">Blue</option>
-                        <option class="text-success" value="Green">Green</option>
-                        <option class="text-dark" value="Dark">Dark</option>
-                        <option class="text-secondary" value="Grey">Grey</option>
-                        <option class="text-light" value="White">White</option>cyanBright
-                        <option class="text-info" value="Cyan_Bright">Cyan Bright</option>
+                        <option class="text-danger" value="danger">Red</option>
+                        <option class="text-primary" value="primary">Blue</option>
+                        <option class="text-success" value="success">Green</option>
+                        <option class="text-dark" value="dark">Dark</option>
+                        <option class="text-secondary" value="secondary">Grey</option>
+                        <option class="text-light" value="light">White</option>cyanBright
+                        <option class="text-info" value="info">Cyan Bright</option>
+                        <option class="text-warning" value="warning">Yellow</option>
                     </select>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button id="submotNewTodoGroupButton" form="modal-details" class="btn btn-success ">Ajouter</button>
+                        <button id="submitNewTodoGroupButton" form="modal-details"
+                            class="btn btn-success ">Ajouter</button>
                     </div>
                 </form>
             </div>
@@ -94,20 +98,70 @@ ss
 
 
 <div class="modal fade" id="deleteGroupConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Warning</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Do you realy want do delete this group <h6 id="hElementForId"></h6>?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button  id="deleteButtonGroupConfirmation" type="button" class="btn btn-danger deleteButton2">Delete</button>
-      </div>
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Warning</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Do you realy want do delete this group <h6 id="hElementForId"></h6>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="deleteButtonGroupConfirmation" type="button"
+                    class="btn btn-danger deleteButton2">Delete</button>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+
+
+<div class="modal fade" id="editGroupModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit group</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modal-modify">
+                    <div class="mb-3">
+                        <label for="groupInputModify" class="col-form-label">Group id:</label>
+                        <input type="text" class="form-control" id="groupId" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="groupInputModify" class="col-form-label">Group name:</label>
+                        <input type="text" class="form-control" id="editInputGroupName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label">Group color:</label>
+                        <select id="editColorGroupSelect" class="form-select" aria-label="Default select example">
+                            <option selected>Chose a color</option>
+                            <option class="text-danger" value="danger">Red</option>
+                            <option class="text-primary" value="primary">Blue</option>
+                            <option class="text-success" value="success">Green</option>
+                            <option class="text-dark" value="dark">Dark</option>
+                            <option class="text-secondary" value="secondary">Grey</option>
+                            <option class="text-light" value="light">White</option>cyanBright
+                            <option class="text-info" value="info">Cyan Bright</option>
+                            <option class="text-warning" value="warning">Yellow</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label">Creation date:</label>
+                        <input id="creationDateInput" ype="text" class="form-control" disabled>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button id="submitEditTodoGroupButton" form="modal-details"
+                            class="btn btn-warning ">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

@@ -94,16 +94,23 @@ app.post('/addNewTodoGroup', (req, res) => {
 });
 
 app.delete('/deleteGroup', (req, res) => {
-  console.log("sssssssssssssss" , req.body.groupId);
   todo_model.delete_selected_todo_group(req.body.groupId).then((response) => {
-    if (response) {
-      res.send(200);
-    }
-    else {
-      res.send(404);
-    }
+    res.send(req.body.groupId);
   })
+});
 
+
+
+app.post('/getGroupInfo', (req, res) => {
+  todo_model.get_group_info(req.body.groupId).then((response) => {
+    res.send(response[0]);
+  })
+});
+
+app.post('/editTodoGroup', (req, res) => {
+  todo_model.edit_todo_group_info(req.body.groupId, req.body.group, req.body.color).then((response) => {
+    res.send("done !");
+  })
 });
 /*
 app.post('/signInPage', (req, res) => {

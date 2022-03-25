@@ -65,10 +65,22 @@ exports.add_new_todo_group = async function (userId, groupName, groupColor) {
 }
 
 exports.delete_selected_todo_group = async function (groupId) {
-    console.log(groupId);
     await client.connect();
-    var rep = await dbo.collection("tasks_groups").deleteOne( {_id: new mongodb.ObjectID(groupId)});
-    console.log("res", rep );
+    var rep = await dbo.collection("tasks_groups").deleteOne({ _id: new mongodb.ObjectID(groupId) });
+    client.close();
+    return rep;
+}
+
+exports.get_group_info = async function (groupId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").find({ _id: new mongodb.ObjectID(groupId) }).toArray();
+    client.close();
+    return rep;
+}
+
+exports.edit_todo_group_info = async function (groupId, groupName, groupColor) {
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").updateOne({ _id: new mongodb.ObjectID(groupId) }, { $set: { "group": groupName, "color": groupColor } });
     client.close();
     return rep;
 }

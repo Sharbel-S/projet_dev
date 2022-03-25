@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	addEventToDeleteGroup();
 	addEventToDeleteGroupConfirmation();
 
-
-
-
+	addEventToEditGroup()
+	addEventToEditGroupConfirmation()
+	
 
 	/*
 	addEventSubmitNewTodoButton();
@@ -25,6 +25,44 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		*/
 })
 
+function addEventToEditGroupConfirmation() {
+	$('#submitEditTodoGroupButton').on('click', function () {
+		var id = $("#groupId").val();
+		var group = $("#editInputGroupName").val();
+		var color = $("#editColorGroupSelect").val();
+		$.ajax({
+			url: '/editTodoGroup',
+			type: 'POST',
+			data: { "groupId": id, "color": color, "group":group},
+			success: function (response) {
+				alert('Group edited successfully.');
+			},
+			error: function (err) {
+				alert('Something went wrong, please try again');
+			}
+		});
+		$('#editGroupModal').modal('hide');
+	});
+}
+
+function addEventToEditGroup() {
+	$('.editGroupButton').on('click', function () {
+		var id = $(this).val();
+		$.ajax({
+			url: '/getGroupInfo',
+			type: 'POST',
+			data: { "groupId": id },
+			success: function (response) {
+				$("#editInputGroupName").val(response.group);
+				$("#editColorGroupSelect").val(response.color);
+				$("#creationDateInput").val(response.creationDate);
+				$("#groupId").val(response._id);
+			},
+		});
+		$('#editGroupModal').modal('show');
+	});
+}
+
 function addEventToDeleteGroupConfirmation() {
 	$('#deleteButtonGroupConfirmation').on('click', function () {
 		var id = $("#hElementForId").text();
@@ -33,7 +71,7 @@ function addEventToDeleteGroupConfirmation() {
 			type: 'DELETE',
 			data: { "groupId": id },
 			success: function (response) {
-
+				$("#" + response).remove();
 				alert('Group removed successfully.');
 			},
 			error: function (err) {
@@ -55,7 +93,7 @@ function addEventToDeleteGroup() {
 }
 
 function addEventToSubmitNewTodoGroup() {
-	$('#submotNewTodoGroupButton').on('click', function () {
+	$('#submitNewTodoGroupButton').on('click', function () {
 		var groupInputName = $("#groupInputName").val();
 		var colorGroupSelect = $("#colorGroupSelect").val();
 		$.ajax({
