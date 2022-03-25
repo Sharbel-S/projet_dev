@@ -56,6 +56,10 @@ rl.on('line', (argument) => {
       view.askForModify(rl);
       break;
 
+    case "group":
+      view.askForGroup(rl);
+      break;  
+
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
   }
