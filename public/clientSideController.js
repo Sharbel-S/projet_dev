@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	addEventToEditTodo();
 	other();
 
+	addEventToSubmitNewTodoGroup();
+
+
 
 	/*
 	addEventSubmitNewTodoButton();
@@ -16,6 +19,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	);
 		*/
 })
+
+function addEventToSubmitNewTodoGroup() {
+	$('#submotNewTodoGroupButton').on('click', function () {
+		var groupInputName = $("#groupInputName").val();
+		var colorGroupSelect = $("#colorGroupSelect").val();
+		$.ajax({
+			url: '/addNewTodoGroup',
+			type: 'POST',
+			data: { "group": groupInputName, "color": colorGroupSelect },
+			success: function (response) {
+
+				alert('Group added successfully.');
+			},
+			error: function (err) {
+
+				alert('Something went wrong, please try again');
+			}
+		});
+		$('#addGroupModal').modal('hide');
+	});
+
+}
 
 
 function addEventSubmitNewTodoButton() {
