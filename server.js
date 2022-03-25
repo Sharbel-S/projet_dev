@@ -38,6 +38,8 @@ app.get('/signUpPage', (req, res) => {
   res.render('signUpPage');
 })
 
+
+
 app.post('/signUp', (req, res) => {
   account_model.check_if_email_already_used(req.body.email).then((response) => {
     if (response == null) {
@@ -68,6 +70,26 @@ app.post('/signInPage', (req, res) => {
       res.redirect('/signInPage');
     }
     else {
+      todo_model.get_all_groups_for_user(req.body.email).then((response) => {
+        res.locals.authenticated = true;
+        req.session.email = req.body.email;
+        //var groupList = todo_model.get_all_groups_for_user(req.body.email);
+        console.log("list ", response);
+        res.render('./mainPage', { list: response })
+      });
+    }
+  }
+  );
+});
+
+/*
+app.post('/signInPage', (req, res) => {
+  account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
+    if (response == null) {
+      req.flash('info', 'Incorect username or password');
+      res.redirect('/signInPage');
+    }
+    else {
       todo_model.getTodoList().then((response) => {
         res.locals.authenticated = true;
         req.session.email = req.body.email;
@@ -78,6 +100,8 @@ app.post('/signInPage', (req, res) => {
   }
   );
 });
+*/
+
 
 app.get('/logout', (req, res) => {
   req.session = null;
@@ -87,11 +111,22 @@ app.get('/logout', (req, res) => {
 
 app.use(is_authenticated);
 
-app.get('/homePage', is_authenticated,(req, res) => {
+app.get('/tasks/:id', (req, res) => {
+  todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
+    res.render('homePage', { list: response })
+  });
+});
+
+
+app.get('/mainPage', is_authenticated, (req, res) => {
+  res.render('mainPage');
+})
+
+app.get('/homePage', is_authenticated, (req, res) => {
   res.render('homePage');
 });
 
-app.get('/addNewTodo', is_authenticated,(req, res) => {
+app.get('/addNewTodo', is_authenticated, (req, res) => {
   res.render('addNewTodo');
 });
 
@@ -99,7 +134,6 @@ app.get('/addNewTodo', is_authenticated,(req, res) => {
 app.post('/addTodo', (req, res) => {
   todo_model.insert_new_todo(req.session.email, req.body).then((response) => {
     console.log(response);
-
   })
 });
 

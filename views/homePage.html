@@ -1,0 +1,165 @@
+{{> header}}
+<br>
+<div class="modal fade" id="addTodoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addTodoModal"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add new TODO</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="modal-add">
+          <div class="mb-3">
+            <label for="titleInputAdd" class="col-form-label">Titre:</label>
+          
+            <input type="text" class="form-control" id="titleInputAdd">
+          </div>
+          <div class="mb-3">
+            <label for="dateInputAdd" class="col-form-label">Date:</label> <br>
+            <input type="date" id="dateInputAdd">
+          </div>
+          <div class="mb-3">
+            <label for="groupInputAdd" class="col-form-label">Group:</label> <br>
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <label for="select"> Chose an existing group </label>
+
+                  <select id="select" class="form-select" aria-label="Default select example">
+                    <option selected> Select group </option>
+                    {{#list}}
+                    {{#tasks}}
+                    <option value="{{group}}">{{group}}</option>
+                    {{/tasks}}
+                    {{/list}}
+                  </select>
+                </div>
+                <div class="col">
+                  <label for=""> or enter a new one </label>
+                  <input type="text" class="form-control" id="groupInputAdd">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="descriptionInputAdd" class="col-form-label">Description:</label>
+            <input type="text" class="form-control" id="descriptionInputAdd">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            <button id="addButton" form="modal-details" class="btn btn-success "> Add </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editTodoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifier un TODO</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="modal-modify">
+          <div class="mb-3">
+            <label for="titleInputModify" class="col-form-label">Titre:</label>
+            <input type="text" class="form-control" id="titleInputModify">
+          </div>
+          <div class="mb-3">
+            <label for="dateInputModify" class="col-form-label">Date:</label> <br>
+            <input type="date" id="dateInputModify">
+          </div>
+          <div class="mb-3">
+            <label for="groupInputModify" class="col-form-label">Group:</label>
+            <input type="text" class="form-control" id="groupInputModify">
+          </div>
+          <div class="mb-3">
+            <label for="descriptionInputModify" class="col-form-label">Description:</label>
+            <input type="text" class="form-control" id="descriptionInputModify">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            <button id="modifyButton" form="modal-details" class="btn btn-warning ">Modifier</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col-12">
+
+      <br>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Group</th>
+            <th scope="col">Date</th>
+            <th scope="col">Titre</th>
+            <th scope="col">Description</th>
+            <th scope="col">Status</th>
+            <th scope="col">
+              <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addTodoModal"
+                data-bs-whatever="@fat">Ajouter un todo </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#list}}
+          {{#tasks}}
+
+          <tr class="divTableRow">
+            <th id="lignId">{{_id}}</th>
+            <td id="lignGroup">{{group}}</td>
+            <td id="lignDate">{{date}}</td>
+            <td id="lignTitle">{{title}}</td>
+            <td id="lignDetails">{{details}}</td>
+            <td> <input class="form-check-input checkboxTodo" type="checkbox" value="{{_id}}" id="flexCheckDefault"
+                {{status}}>
+            </td>
+            <td> <a class="btn btn-sm btn-warning editButton">Edit</a>
+              <a class="btn btn-sm btn-danger deleteButton">Delete</a>
+            </td>
+          </tr>
+          {{/tasks}}
+          {{/list}}
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="deleteConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Warning</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you realy want do delete this todo <h6 id="modal_body"></h6>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger deleteButton2">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

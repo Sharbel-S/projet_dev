@@ -6,11 +6,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 var dbo = client.db("Todos");
 
 
-
-
 exports.check_email_password_account = async function (email, password) {
     await client.connect();
-    var rep = await dbo.collection("accounts").findOne({ "emaisl": email, "password": password });
+    var rep = await dbo.collection("accounts").findOne({ "email": email, "password": password });
     client.close();
     if (rep != null) return rep._id.toString();
     return null;

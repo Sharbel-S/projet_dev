@@ -1,0 +1,110 @@
+{{> header}}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addGroupModal"
+                data-bs-whatever="@fat">Add new group </button>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>
+
+
+{{#list}}
+{{#tasks}}
+
+ss
+
+{{/tasks}}
+{{/list}}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {{#list}}
+            <div class="card border-{{color}} mb-3" style="max-width: 18rem;">
+                <div class="card-header">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-outline-warning btn-sm">✏️</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm">🗑️</button>
+                    </div>
+                </div>
+                <div class="card-body text-dark">
+                    <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}" style="text-decoration:none">{{group}}</a> </h3>
+                    <p class="card-text">
+                        Nombre de tache total: 20 <br>
+                        Nombre de tache à faire: 15
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent text-muted">created 03/02/1998</div>
+            </div>
+            {{/list}}
+        </div>
+        <div class="col">
+            <div class="card border-success mb-3" style="max-width: 18rem;">
+                <div class="card-body text-dark">
+                    <h3> <a href="#" class="card-title text-success" style="text-decoration:none">My job</a> </h3>
+                    <p class="card-text">
+                        Nombre de tache total: 20 <br>
+                        Nombre de tache à faire: 15
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent text-muted">last modified 03/02/1998</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-danger mb-3" style="max-width: 18rem;">
+                <div class="card-body text-dark">
+                    <h3> <a href="#" class="card-title text-danger" style="text-decoration:none">My job</a> </h3>
+                    <p class="card-text">
+                        Nombre de tache total: 20 <br>
+                        Nombre de tache à faire: 15
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent text-muted">last modified 03/02/1998</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addGroupModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter un group</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modal-modify">
+                    <div class="mb-3">
+                        <label for="groupInputModify" class="col-form-label">Group name:</label>
+                        <input type="text" class="form-control" id="groupInputModify">
+                    </div>
+
+                    <label class="col-form-label">Group color:</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Chose a color</option>
+                        <option class="text-danger" value="red">Red</option>
+                        <option class="text-primary" value="Blue">Blue</option>
+                        <option class="text-success" value="Green">Green</option>
+                        <option class="text-dark" value="Dark">Dark</option>
+                        <option class="text-secondary" value="Grey">Grey</option>
+                        <option class="text-light" value="White">White</option>cyanBright
+                        <option class="text-info" value="Cyan_Bright">Cyan Bright</option>
+                    </select>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button id="modifyButton" form="modal-details" class="btn btn-success ">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

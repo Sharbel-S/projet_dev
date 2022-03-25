@@ -1,14 +1,48 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+
+	addEventToDeleteTodo();
+	addEventToEditTodo();
+	other();
+
+
+	/*
+	addEventSubmitNewTodoButton();
+	$('#box').append(
+		$('<div/>')
+			.attr("id", "newDiv1")
+			.addClass("newDiv purple bloated")
+			.append("<span/>")
+			.text("hello world")
+	);
+		*/
+})
+
+
+function addEventSubmitNewTodoButton() {
+	$('#addButton').on('click', function () {
+		var newlignGroup = $("#groupInputAdd").val();
+		var newlignDate = $("#dateInputAdd").val();
+		var newlignTitle = $("#titleInputAdd").val();
+		var newlignDetails = $("#descriptionInputAdd").val();
+		var newlignGroupSelect = $("#select").val();
+		if (newlignTitle == "") {
+			alert("Title cannot be empty")
+		}
+		else {
+			console.log("ssss");
+		}
+	});
+}
+
+function addEventToDeleteTodo() {
 	$('.deleteButton').on('click', function () {
 		var book_code_call = $(this).closest(".divTableRow").find("#lignTitle").text();
 		$("#modal_body").html(book_code_call);
 		$('#deleteConfirmation').modal('show');
 	});
+}
 
-	$('.deleteButton2').on('click', function () {
-		var id = $("#lignId").text();
-	});
-
+function addEventToEditTodo() {
 	$('.editButton').on('click', function () {
 		var lignGroup = $(this).closest(".divTableRow").find("#lignGroup").text();
 		var lignDate = $(this).closest(".divTableRow").find("#lignDate").text();
@@ -19,14 +53,52 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		$("#groupInputModify").val(lignGroup);
 		$("#descriptionInputModify").val(lignDetails);
 		$('#editTodoModal').modal('show');
-
 	});
+}
+
+function other() {
+
+	$('.deleteButton2').on('click', function () {
+		var id = $("#lignId").text();
+	});
+
+
 
 	$('#modifyButton').on('click', function () {
 		var newlignGroup = $("#titleInputModify").val();
 		var newlignDate = $("#dateInputModify").val();
 		var newlignTitle = $("#titleInputModify").val();
 		var newlignDetails = $("#descriptionInputModify").val();;
+
 	});
 
-})
+
+	$('.checkboxTodo').on('click', function () {
+		var checkboxDataId = $(this).val();
+		if (!$(this).is(':checked')) {
+			console.log("checked");
+		}
+		else {
+			console.log("non");
+		}
+	});
+
+	$("#groupInputAdd").on("input", function () {
+		if (this.value === "") {
+			$("#select").prop("disabled", false);
+		}
+		else {
+			$("#select").prop("disabled", true);
+		}
+	});
+
+	$("#select").on("input", function () {
+		if (this.value != "Select group") {
+			$("#groupInputAdd").prop("disabled", true);
+		}
+		else {
+			$("#groupInputAdd").prop("disabled", false);
+
+		}
+	});
+}

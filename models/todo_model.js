@@ -32,7 +32,14 @@ exports.insert_new_todo = async function (email, data) {
 
 exports.get_all_groups_for_user = async function (userEmail) {
     await client.connect();
-    var rep = await dbo.collection("tasks_groups").find({ "email": userEmail }).project({ "group": 1, "_id": 0 }).toArray();
+    var rep = await dbo.collection("tasks_groups").find({ "email": userEmail }).project({ "group": 1 ,"color":1, "_id": 0 }).toArray();
+    client.close();
+    return rep;
+}
+
+exports.get_all_tasks_of_group = async function (groupId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").find({"group": groupId }).toArray();
     client.close();
     return rep;
 }
