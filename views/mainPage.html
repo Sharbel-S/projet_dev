@@ -30,15 +30,15 @@ ss
                 <div class="card-header">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" class="btn btn-outline-warning btn-sm">✏️</button>
-                        <button type="button" class="btn btn-outline-danger btn-sm">🗑️</button>
+                        <button value="{{_id}}" type="button" class="btn btn-outline-danger btn-sm deleteGroupButton" >🗑️</button>
                     </div>
                 </div>
                 <div class="card-body text-dark">
                     <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}" style="text-decoration:none">{{group}}</a> </h3>
                     <p class="card-text">
-                        Id : {{_id}} <br>
+                         
                         Nombre de tache total: 20 <br>
-                        Nombre de tache à faire: 15
+                        Nombre de tache à faire: 15 <br>
                     </p>
                 </div>
                 <div class="card-footer bg-transparent text-muted">created {{creationDate}}</div>
@@ -90,4 +90,24 @@ ss
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="modal fade" id="deleteGroupConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Warning</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you realy want do delete this group <h6 id="hElementForId"></h6>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button  id="deleteButtonGroupConfirmation" type="button" class="btn btn-danger deleteButton2">Delete</button>
+      </div>
+    </div>
+  </div>
 </div>

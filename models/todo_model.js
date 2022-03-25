@@ -6,6 +6,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 var dbo = client.db("Todos");
 var today = new Date();
 var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+var mongodb = require('mongodb');
 
 
 exports.getTodoList = async function () {
@@ -34,7 +35,7 @@ exports.insert_new_todo = async function (title, date, details, group) {
 
 exports.get_all_groups_for_user = async function (userEmail) {
     await client.connect();
-    var rep = await dbo.collection("tasks_groups").find({ "userId": userEmail }).project({ "group": 1, "color": 1, "creationDate": 1 , "_id": 1 }).toArray();
+    var rep = await dbo.collection("tasks_groups").find({ "userId": userEmail }).project({ "group": 1, "color": 1, "creationDate": 1, "_id": 1 }).toArray();
     client.close();
     return rep;
 }
@@ -59,7 +60,15 @@ exports.change_todo_title = async function () {
 exports.add_new_todo_group = async function (userId, groupName, groupColor) {
     await client.connect();
     var rep = await dbo.collection("tasks_groups").insertOne({ "userId": userId, "group": groupName, "color": groupColor, "creationDate": date });
-    console.log(date);
+    client.close();
+    return rep;
+}
+
+exports.delete_selected_todo_group = async function (groupId) {
+    console.log(groupId);
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").deleteOne( {_id: new mongodb.ObjectID(groupId)});
+    console.log("res", rep );
     client.close();
     return rep;
 }

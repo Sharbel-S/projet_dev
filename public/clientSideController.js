@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 	addEventToSubmitNewTodoGroup();
 
+	addEventToDeleteGroup();
+	addEventToDeleteGroupConfirmation();
+
+
+
 
 
 	/*
@@ -19,6 +24,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	);
 		*/
 })
+
+function addEventToDeleteGroupConfirmation() {
+	$('#deleteButtonGroupConfirmation').on('click', function () {
+		var id = $("#hElementForId").text();
+		$.ajax({
+			url: '/deleteGroup',
+			type: 'DELETE',
+			data: { "groupId": id },
+			success: function (response) {
+
+				alert('Group removed successfully.');
+			},
+			error: function (err) {
+
+				alert('Something went wrong, please try again');
+			}
+		});
+		$('#deleteGroupConfirmation').modal('hide');
+
+	});
+}
+
+function addEventToDeleteGroup() {
+	$('.deleteGroupButton').on('click', function () {
+		var id = $(this).val();
+		$("#hElementForId").html(id);
+		$('#deleteGroupConfirmation').modal('show');
+	});
+}
 
 function addEventToSubmitNewTodoGroup() {
 	$('#submotNewTodoGroupButton').on('click', function () {

@@ -74,7 +74,6 @@ app.post('/signInPage', (req, res) => {
       res.locals.authenticated = true;
       todo_model.get_all_groups_for_user(responseId).then((response) => {
         //var groupList = todo_model.get_all_groups_for_user(req.body.email);
-        console.log(response);
         res.render('./mainPage', { list: response })
       });
     }
@@ -94,6 +93,18 @@ app.post('/addNewTodoGroup', (req, res) => {
   })
 });
 
+app.delete('/deleteGroup', (req, res) => {
+  console.log("sssssssssssssss" , req.body.groupId);
+  todo_model.delete_selected_todo_group(req.body.groupId).then((response) => {
+    if (response) {
+      res.send(200);
+    }
+    else {
+      res.send(404);
+    }
+  })
+
+});
 /*
 app.post('/signInPage', (req, res) => {
   account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
