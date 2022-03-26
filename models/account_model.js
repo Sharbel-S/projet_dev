@@ -25,6 +25,8 @@ exports.check_if_email_already_used = async function (email) {
 exports.create_new_account = async function (email, password) {
     await client.connect();
     var rep = await dbo.collection("accounts").insertOne({ "email": email, "password": password });
-    return rep;
+    console.log(rep);
+    if (rep != null) return rep.insertedId.toString();
+    return null;
 }
 

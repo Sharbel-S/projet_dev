@@ -42,16 +42,17 @@ app.get('/signUpPage', (req, res) => {
 
 app.post('/signUp', (req, res) => {
   account_model.check_if_email_already_used(req.body.email).then((response) => {
-    if (response == null) {
+    if (!response) {
       if (req.body.password !== req.body.confirmPassword) {
         req.flash('info', 'Password and confirmation are not the same');
         res.redirect('/signUpPage');
       }
       else {
-        account_model.create_new_account(req.body.email, req.body.password).then((response) => {
+        account_model.create_new_account(req.body.email, req.body.password).then((responseId) => {
           if (response != null) {
             res.locals.authenticated = true;
-            res.render('./homePage');
+            req.session.userId = responseId;
+            res.redirect('./mainPage');
           }
         })
       }
@@ -72,10 +73,7 @@ app.post('/signInPage', (req, res) => {
     else {
       req.session.userId = responseId;
       res.locals.authenticated = true;
-      todo_model.get_all_groups_for_user(responseId).then((response) => {
-        //var groupList = todo_model.get_all_groups_for_user(req.body.email);
-        res.render('./mainPage', { list: response })
-      });
+      res.redirect('./mainPage');
     }
   }
   );
@@ -141,16 +139,18 @@ app.get('/logout', (req, res) => {
 
 app.use(is_authenticated);
 
+app.get('/mainPage', is_authenticated, (req, res) => {
+  todo_model.get_all_groups_for_user(req.session.userId).then((response) => {
+    res.render('mainPage', { list: response });
+  });
+});
+
 app.get('/tasks/:id', (req, res) => {
   todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
     res.render('homePage', { list: response })
   });
 });
 
-
-app.get('/mainPage', is_authenticated, (req, res) => {
-  res.render('mainPage');
-})
 
 app.get('/homePage', is_authenticated, (req, res) => {
   res.render('homePage');
@@ -168,7 +168,7 @@ app.post('/addTodo', (req, res) => {
 });
 
 function is_authenticated(req, res, next) {
-  if (req.session.email !== undefined) {
+  if (req.session.userId !== undefined) {
     res.locals.authenticated = true;
     return next();
   }
