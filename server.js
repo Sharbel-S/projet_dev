@@ -97,7 +97,24 @@ app.delete('/deleteGroup', (req, res) => {
   })
 });
 
+app.delete('/deleteTask', (req, res) => {
+  todo_model.delete_selected_todo(req.body.taskId).then((response) => {
+    res.send(req.body.groupId);
+  })
+});
 
+
+app.post('/changeTodoStatus', (req, res) => {
+  todo_model.set_todo_status_to_todo(req.body.taskId).then((response) => {
+    res.send("done");
+  })
+});
+
+app.post('/changeTodoStatusToDone', (req, res) => {
+  todo_model.set_todo_status_to_done(req.body.taskId).then((response) => {
+    res.send("done");
+  })
+});
 
 app.post('/getGroupInfo', (req, res) => {
   todo_model.get_group_info(req.body.groupId).then((response) => {
@@ -107,6 +124,12 @@ app.post('/getGroupInfo', (req, res) => {
 
 app.post('/editTodoGroup', (req, res) => {
   todo_model.edit_todo_group_info(req.body.groupId, req.body.group, req.body.color).then((response) => {
+    res.send("done !");
+  })
+});
+
+app.post('/modifyTodo', (req, res) => {
+  todo_model.edit_todo_info(req.body.id, req.body.title, req.body.description, req.body.limited_date).then((response) => {
     res.send("done !");
   })
 });
@@ -146,14 +169,21 @@ app.get('/mainPage', is_authenticated, (req, res) => {
 });
 
 app.get('/tasks/:id', (req, res) => {
-  todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
-    res.render('homePage', { list: response })
-  });
+  if (req.params.id === "clientSideController.js") {
+    res.render('/');
+  }
+  else {
+    todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
+      res.render('tasksList', { list: response,  });
+    });
+  }
+
 });
 
-
-app.get('/homePage', is_authenticated, (req, res) => {
-  res.render('homePage');
+app.get('/test', is_authenticated, (req, res) => {
+  todo_model.get_all_tasks_of_group("623ee300dda95d7d76975939").then((response) => {
+    res.render('tasksList', { list: response,  });
+  });
 });
 
 app.get('/addNewTodo', is_authenticated, (req, res) => {
@@ -166,6 +196,9 @@ app.post('/addTodo', (req, res) => {
     console.log(response);
   })
 });
+
+
+
 
 function is_authenticated(req, res, next) {
   if (req.session.userId !== undefined) {

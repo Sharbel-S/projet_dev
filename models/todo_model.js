@@ -5,7 +5,7 @@ const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/accountExis
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
 var today = new Date();
-var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+var date = today.getFullYear() + '-' + (today.getMonth() + 1) + +  '-' + today.getDate();
 var mongodb = require('mongodb');
 
 
@@ -42,7 +42,7 @@ exports.get_all_groups_for_user = async function (userEmail) {
 
 exports.get_all_tasks_of_group = async function (groupId) {
     await client.connect();
-    var rep = await dbo.collection("tasks").find({ "group": groupId }).toArray();
+    var rep = await dbo.collection("tasks").find({ "groupId": groupId }).toArray();
     client.close();
     return rep;
 }
@@ -71,6 +71,13 @@ exports.delete_selected_todo_group = async function (groupId) {
     return rep;
 }
 
+exports.delete_selected_todo = async function (taskId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").deleteOne({ _id: new mongodb.ObjectID(taskId) });
+    client.close();
+    return rep;
+}
+
 exports.get_group_info = async function (groupId) {
     await client.connect();
     var rep = await dbo.collection("tasks_groups").find({ _id: new mongodb.ObjectID(groupId) }).toArray();
@@ -81,6 +88,27 @@ exports.get_group_info = async function (groupId) {
 exports.edit_todo_group_info = async function (groupId, groupName, groupColor) {
     await client.connect();
     var rep = await dbo.collection("tasks_groups").updateOne({ _id: new mongodb.ObjectID(groupId) }, { $set: { "group": groupName, "color": groupColor } });
+    client.close();
+    return rep;
+}
+
+exports.edit_todo_info = async function (taskId, newTitle, newDescription, newDate) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "title": newTitle, "limited_date": newDate, "description": newDescription } });
+    client.close();
+    return rep;
+}
+
+exports.set_todo_status_to_todo = async function(taskId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "todo"} });
+    client.close();
+    return rep;
+}
+
+exports.set_todo_status_to_done = async function(taskId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "checked"} });
     client.close();
     return rep;
 }

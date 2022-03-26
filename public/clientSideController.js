@@ -9,10 +9,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	addEventToDeleteGroup();
 	addEventToDeleteGroupConfirmation();
 
-	addEventToEditGroup()
-	addEventToEditGroupConfirmation()
-	
+	addEventToEditGroup();
+	addEventToEditGroupConfirmation();
 
+	addEventToEditTodoConfirmation();
+	addEventToSubmitDeleteTodo();
+
+	addEventToCheckBox();
 	/*
 	addEventSubmitNewTodoButton();
 	$('#box').append(
@@ -25,6 +28,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		*/
 })
 
+function addEventToEditTodoConfirmation() {
+	$('#submitModifyButton').on('click', function () {
+		var id = $("#idInputModify").val();
+		var newlignDate = $("#dateInputModify").val();
+		var newlignTitle = $("#titleInputModify").val();
+		var newlignDetails = $("#descriptionInputModify").val();
+		$.ajax({
+			url: '/modifyTodo',
+			type: 'POST',
+			data: { "id": id, "limited_date": newlignDate, "title": newlignTitle, "description": newlignDetails },
+			success: function (response) {
+
+				alert('Task modified successfully.');
+			},
+			error: function (err) {
+
+				alert('Something went wrong, please try again');
+			}
+		});
+		$('#editTodoModal').modal('hide');
+	});
+}
+
 function addEventToEditGroupConfirmation() {
 	$('#submitEditTodoGroupButton').on('click', function () {
 		var id = $("#groupId").val();
@@ -33,7 +59,7 @@ function addEventToEditGroupConfirmation() {
 		$.ajax({
 			url: '/editTodoGroup',
 			type: 'POST',
-			data: { "groupId": id, "color": color, "group":group},
+			data: { "groupId": id, "color": color, "group": group },
 			success: function (response) {
 				alert('Group edited successfully.');
 			},
@@ -133,18 +159,43 @@ function addEventSubmitNewTodoButton() {
 
 function addEventToDeleteTodo() {
 	$('.deleteButton').on('click', function () {
-		var book_code_call = $(this).closest(".divTableRow").find("#lignTitle").text();
-		$("#modal_body").html(book_code_call);
+		var title = $(this).closest(".divTableRow").find("#lignTitle").text();
+		var id = $(this).closest(".divTableRow").find("#lignId").text();
+		$("#modal_body").html(title);
+		$("#modal_body2").html(id);
 		$('#deleteConfirmation').modal('show');
+	});
+}
+
+
+function addEventToSubmitDeleteTodo() {
+	$('.deleteButton2').on('click', function () {
+		var id = $("#modal_body2").text();
+		$.ajax({
+			url: '/deleteTask',
+			type: 'DELETE',
+			data: { "taskId": id },
+			success: function (response) {
+				alert('Task removed successfully.');
+			},
+			error: function (err) {
+
+				alert('Something went wrong, please try again');
+			}
+		});
+		$('#deleteConfirmation').modal('hide');
 	});
 }
 
 function addEventToEditTodo() {
 	$('.editButton').on('click', function () {
+		var lignId = $(this).closest(".divTableRow").find("#lignId").text();
 		var lignGroup = $(this).closest(".divTableRow").find("#lignGroup").text();
 		var lignDate = $(this).closest(".divTableRow").find("#lignDate").text();
 		var lignTitle = $(this).closest(".divTableRow").find("#lignTitle").text();
 		var lignDetails = $(this).closest(".divTableRow").find("#lignDetails").text();
+
+		$("#idInputModify").val(lignId);
 		$("#titleInputModify").val(lignTitle);
 		$("#dateInputModify").val(lignDate);
 		$("#groupInputModify").val(lignGroup);
@@ -153,32 +204,10 @@ function addEventToEditTodo() {
 	});
 }
 
+
 function other() {
 
-	$('.deleteButton2').on('click', function () {
-		var id = $("#lignId").text();
-	});
 
-
-
-	$('#modifyButton').on('click', function () {
-		var newlignGroup = $("#titleInputModify").val();
-		var newlignDate = $("#dateInputModify").val();
-		var newlignTitle = $("#titleInputModify").val();
-		var newlignDetails = $("#descriptionInputModify").val();;
-
-	});
-
-
-	$('.checkboxTodo').on('click', function () {
-		var checkboxDataId = $(this).val();
-		if (!$(this).is(':checked')) {
-			console.log("checked");
-		}
-		else {
-			console.log("non");
-		}
-	});
 
 	$("#groupInputAdd").on("input", function () {
 		if (this.value === "") {
@@ -187,6 +216,7 @@ function other() {
 		else {
 			$("#select").prop("disabled", true);
 		}
+
 	});
 
 	$("#select").on("input", function () {
@@ -198,4 +228,45 @@ function other() {
 
 		}
 	});
+
+
+}
+
+
+
+function addEventToCheckBox() {
+	$('.checkboxTodo').on('click', function () {
+		var checkboxDataId = $(this).val();
+		if (!$(this).is(':checked')) {
+			$.ajax({
+				url: '/changeTodoStatus',
+				type: 'POST',
+				data: { "taskId": checkboxDataId },
+				success: function (response) {
+
+					alert('Todo status has been changed successfully.');
+				},
+				error: function (err) {
+
+					alert('Something went wrong, please try again');
+				}
+			});
+		}
+		else {
+			$.ajax({
+				url: '/changeTodoStatusToDone',
+				type: 'POST',
+				data: { "taskId": checkboxDataId },
+				success: function (response) {
+
+					alert('Todo status has been changed successfully.');
+				},
+				error: function (err) {
+
+					alert('Something went wrong, please try again');
+				}
+			});
+		}
+	});
+
 }
