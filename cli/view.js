@@ -315,19 +315,29 @@ exports.askForTitleToRemove = function (rl) {
             return new Promise((resolve, reject) => {
                 rl.question('enter the title of the todo you want to delete: ', (title) => {
                     resolve();
-                    controler.removeTodoFromDataBase(title);
-
+                    removeTodo(title);
                 });
             })
         }
         else {
             console.log("You must choose a group !");
         }
-
     }
     else {
         console.log(chalk.yellow("You must to login !"));
     }
+}
+
+
+function removeTodo(title) {
+    todo_model.delete_selected_todo_by_name(title, groupSelected, groupSelectedId).then((respone) => {
+        if (respone.deletedCount != 0) {
+            console.log("Todo removed successfully !")
+        }
+        else {
+            console.log("Something went wrong, please try again");
+        }
+    })
 }
 
 exports.askForGroup = function (rl) {
@@ -335,23 +345,27 @@ exports.askForGroup = function (rl) {
         return new Promise((resolve, reject) => {
             rl.question('enter the group of the todo you want to choose: ', (group) => {
                 resolve();
-                todo_model.check_if_group_exist(group).then((response) => {
-                    if (response != null) {
-                        isGroupSelected = true;
-                        groupSelected = group;
-                        groupSelectedId = response.groupId;
-                        console.log("Group", groupSelected, "is now selected !");
-                    }
-                    else {
-                        console.log("Group not found, please make sur that the group already exist !");
-                    }
-                })
+                choseGroupIfExist(group);
             });
         })
     }
     else {
         console.log(chalk.yellow("You must to login !"));
     }
+}
+
+function choseGroupIfExist(group) {
+    todo_model.check_if_group_exist(group).then((response) => {
+        if (response != null) {
+            isGroupSelected = true;
+            groupSelected = group;
+            groupSelectedId = response._id.toString();
+            console.log("Group", groupSelected, "is now selected !");
+        }
+        else {
+            console.log("Group not found, please make sur that the group already exist !");
+        }
+    })
 }
 
 exports.signOut = function () {

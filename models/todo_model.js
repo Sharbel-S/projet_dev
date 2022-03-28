@@ -128,3 +128,10 @@ exports.check_if_group_exist = async function (groupName) {
     return rep;
 }
 
+exports.delete_selected_todo_by_name = async function (title, groupSelected, groupSelectedId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").deleteOne({ "title": title, "groupName":groupSelected, "groupId": groupSelectedId });
+    client.close();
+    return rep;
+}
+
