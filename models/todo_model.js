@@ -123,7 +123,7 @@ exports.add_new_todo = async function (groupId, groupName, newTitle, newDate, ne
 
 exports.check_if_group_exist = async function (groupName) {
     await client.connect();
-    var rep = await dbo.collection("tasks").findOne({ "groupName": groupName });
+    var rep = await dbo.collection("tasks_groups").findOne({ "group": groupName });
     client.close();
     return rep;
 }
