@@ -1,8 +1,9 @@
 "use strict"
 const chalk = require("chalk");
-const { response } = require("express");
 var controler = require('./controler.js');
 var todo_model = require('../models/todo_model');
+var account_model = require('../models/account_model');
+
 var todoTitle = "";
 var todoDetails = "";
 var todoNewTitle = "";
@@ -83,7 +84,7 @@ exports.askForAddTheTitle = function (rl) {
         }
     }
     else {
-        console.log("You must to login !");
+        console.log(chalk.yellow("You must to login !"));
     }
 
 }
@@ -138,7 +139,7 @@ exports.askForModify = function (rl) {
 
     }
     else {
-        console.log("You must to login !");
+        console.log(chalk.yellow("You must to login !"));
     }
 }
 
@@ -152,15 +153,15 @@ exports.askForModifyTheDate = function (rl) {
                     controler.modifyActualDate(todoDate, todoNewDate);
                 })
             });
-}
-else {
-    console.log("You must choose a group !")
-}
+        }
+        else {
+            console.log("You must choose a group !")
+        }
 
-}
-else {
-console.log("You must to login !");
-}
+    }
+    else {
+        console.log(chalk.yellow("You must to login !"));
+    }
 }
 
 exports.askForModifyTheDetails = function (rl) {
@@ -173,15 +174,15 @@ exports.askForModifyTheDetails = function (rl) {
                     controler.modifyActualDetails(todoDetails, todoNewDetails);
                 })
             });
-}
-else {
-    console.log("You must choose a group !")
-}
+        }
+        else {
+            console.log("You must choose a group !")
+        }
 
-}
-else {
-console.log("You must to login !");
-}
+    }
+    else {
+        console.log(chalk.yellow("You must to login !"));
+    }
 }
 
 exports.askForColumnToModify = function (rl) {
@@ -247,13 +248,24 @@ function askForPasswordToLogin(rl) {
         rl.question('enter your password: ', (password) => {
             passwordLog = password;
             resolve();
-            controler.checkEmailPasswordAccount(emailLog, passwordLog).then((response) => {
+            account_model.check_email_password_account(emailLog, passwordLog).then((response) => {
                 if (response != null) {
                     idUser = response;
                     isConnected = true;
+                    console.log("Connected with success !");
+                    printAllGroupsForUser(idUser);
                 }
-            });
+                else {
+                    console.log("Username or Password incorrect !");
+                }
+            })
         });
+    })
+}
+
+function printAllGroupsForUser(idUser) {
+    todo_model.get_all_groups_for_user(idUser).then((response) => {
+        console.log(response);
     })
 }
 
@@ -275,7 +287,7 @@ exports.askForTitleToRemove = function (rl) {
 
     }
     else {
-        console.log("You must to login !");
+        console.log(chalk.yellow("You must to login !"));
     }
 }
 
@@ -290,6 +302,6 @@ exports.askForGroup = function (rl) {
         })
     }
     else {
-        console.log("You must to login !");
+        console.log(chalk.yellow("You must to login !"));
     }
 }
