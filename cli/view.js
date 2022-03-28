@@ -274,13 +274,18 @@ function askForConfirmationPassword(rl) {
 }
 
 exports.askForEmailToLogin = function (rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter your email: ', (email) => {
-            emailLog = email;
-            resolve();
-            askForPasswordToLogin(rl);
-        });
-    })
+    if (isConnected) {
+        console.log("You must logout to sign in with another account");
+    }
+    else {
+        return new Promise((resolve, reject) => {
+            rl.question('enter your email: ', (email) => {
+                emailLog = email;
+                resolve();
+                askForPasswordToLogin(rl);
+            });
+        })
+    }
 }
 
 
