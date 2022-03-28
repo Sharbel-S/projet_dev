@@ -62,6 +62,10 @@ rl.on('line', (argument) => {
       view.signOut();
       break;
 
+    case "addgroup":
+      view.askForNameForNewGroup(rl);
+      break;
+      
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
   }
