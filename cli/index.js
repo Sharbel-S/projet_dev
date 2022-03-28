@@ -58,6 +58,10 @@ rl.on('line', (argument) => {
       view.askForGroup(rl);
       break;
 
+    case "signout":
+      view.signOut();
+      break;
+
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
   }

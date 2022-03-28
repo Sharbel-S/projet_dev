@@ -330,3 +330,21 @@ exports.askForGroup = function (rl) {
         console.log(chalk.yellow("You must to login !"));
     }
 }
+
+exports.signOut = function () {
+    isConnected = false;
+    isGroupSelected = false;
+    todoTitle = "";
+    todoDetails = "";
+    todoNewTitle = "";
+    todoNewDate = "";
+    todoNewDetails = "";
+    newEmail = "";
+    newPassord = "";
+    todoDate = "";
+    emailLog = "";
+    passwordLog = "";
+    idUser = "";
+    groupSelected = "";
+    console.log("sign out successfully !");
+}
