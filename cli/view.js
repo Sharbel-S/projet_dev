@@ -68,17 +68,21 @@ exports.printListeDetails = function () {
     console.log("----------------------------------");
 }
 
-exports.askForAddTheTitle = function (rl) {
+exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
             return new Promise((resolve, reject) => {
-                rl.question('enter a title: ', (arr) => {
-                    todoTitle = arr;
-                    resolve();
-                    askForDescription(rl);
+                rl.question('enter a title: ', (inputTitle) => {
+                    if (inputTitle === "") {
+                        console.log("Title cannot be empty !");
+                    }
+                    else {
+                        todoTitle = inputTitle;
+                        resolve();
+                        askForDescriptionToAddNewTodo(rl);
+                    }
                 });
             })
-
         }
         else {
             console.log('You must choose a group !');
@@ -91,25 +95,34 @@ exports.askForAddTheTitle = function (rl) {
 }
 
 
-function askForDescription(rl) {
+function askForDescriptionToAddNewTodo(rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter a Description: ', (inputDescription) => {
             todoDetails = inputDescription;
             resolve();
-            askForDateToAdd(rl);
+            askForDateToAddNewTodo(rl);
         });
     })
 }
 
-function askForDateToAdd(rl) {
+function askForDateToAddNewTodo(rl) {
     return new Promise((resolve, reject) => {
-        rl.question('enter a Date: ', (inputDate) => {
+        rl.question('enter a limite Date: ', (inputDate) => {
             todoDate = inputDate;
             resolve();
-            todo_model.insert_new_todo(todoTitle, todoDate, todoDetails, groupSelected).then((response) => {
-                console.log("Data inserted successfully !")
-            })
+            addNewTodo();
         });
+    })
+}
+
+function addNewTodo() {
+    todo_model.add_new_todo(groupSelectedId, groupSelected, todoTitle, todoDate, todoDetails).then((response) => {
+        if (response != null) {
+            console.log("Data inserted successfully !")
+        }
+        else {
+            console.log("Something went wrong, please try again");
+        }
     })
 }
 
@@ -327,6 +340,7 @@ exports.askForGroup = function (rl) {
                         isGroupSelected = true;
                         groupSelected = group;
                         groupSelectedId = response.groupId;
+                        console.log("Group", groupSelected, "is now selected !");
                     }
                     else {
                         console.log("Group not found, please make sur that the group already exist !");
