@@ -9,8 +9,8 @@ var todoDetails = "";
 var todoNewTitle = "";
 var todoNewDate = "";
 var todoNewDetails = "";
-var todoEmail = "";
-var todoPassword = "";
+var newEmail = "";
+var newPassord = "";
 var todoDate = "";
 var emailLog = "";
 var passwordLog = "";
@@ -204,30 +204,55 @@ exports.askForColumnToModify = function (rl) {
 
                 default:
                     console.log(chalk.red('Column not found'));
-
             }
-
-
         });
     })
 }
 
-exports.askForSignup = function (rl) {
+exports.askForEmailToSignUp = function (rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter an email: ', (email) => {
-            todoEmail = email;
+            newEmail = email;
             resolve();
-            askForPassword(rl);
+            account_model.check_if_email_already_used(newEmail).then((response) => {
+                if (!response) {
+                    askForPasswordToSignUp(rl);
+                }
+                else {
+                    console.log("Email already used !");
+                }
+            })
         });
     })
 }
 
-function askForPassword(rl) {
+function askForPasswordToSignUp(rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter a password: ', (Password) => {
-            todoPassword = Password;
+            newPassord = Password;
             resolve();
-            controler.addNewAccountToDataBase(todoEmail, todoPassword);
+            askForConfirmationPassword(rl);
+        });
+    })
+}
+
+function askForConfirmationPassword(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter confimation password: ', (PasswordConfirmation) => {
+            resolve();
+            if (PasswordConfirmation !== newPassord) {
+                console.log("Password and confirmation are not the same");
+            }
+            else {
+                account_model.create_new_account(newEmail, newPassord).then((response) => {
+                    if (response != null) {
+                        idUser = response;
+                        isConnected = true;
+                        console.log("Account created successfully");
+                        console.log("Connected with success !");
+                    }
+                });
+            }
         });
     })
 }

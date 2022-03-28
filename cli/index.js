@@ -20,9 +20,7 @@ rl.on('line', (argument) => {
   switch (listArgument[0]) {
 
     case "add":
-      
-        view.askForAddTheTitle(rl);
-      
+      view.askForAddTheTitle(rl);
       break;
 
     case "info":
@@ -41,7 +39,7 @@ rl.on('line', (argument) => {
       break;
 
     case "signup":
-      view.askForSignup(rl);
+      view.askForEmailToSignUp(rl);
       break;
 
     case "login":
@@ -58,7 +56,7 @@ rl.on('line', (argument) => {
 
     case "group":
       view.askForGroup(rl);
-      break;  
+      break;
 
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
