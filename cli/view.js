@@ -16,6 +16,7 @@ var emailLog = "";
 var passwordLog = "";
 var idUser = "";
 var groupSelected = "";
+var groupSelectedId = "";
 var isConnected = false;
 var isGroupSelected = false;
 
@@ -321,8 +322,16 @@ exports.askForGroup = function (rl) {
         return new Promise((resolve, reject) => {
             rl.question('enter the group of the todo you want to choose: ', (group) => {
                 resolve();
-                isGroupSelected = true;
-                groupSelected = group;
+                todo_model.check_if_group_exist(group).then((response) => {
+                    if (response != null) {
+                        isGroupSelected = true;
+                        groupSelected = group;
+                        groupSelectedId = response.groupId;
+                    }
+                    else {
+                        console.log("Group not found, please make sur that the group already exist !");
+                    }
+                })
             });
         })
     }

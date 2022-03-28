@@ -5,7 +5,7 @@ const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/accountExis
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
 var today = new Date();
-var date = today.getFullYear() + '-' + (today.getMonth()+1) +  '-' + today.getDate();
+var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 var mongodb = require('mongodb');
 
 
@@ -117,6 +117,13 @@ exports.set_todo_status_to_done = async function (taskId) {
 exports.add_new_todo = async function (groupId, groupName, newTitle, newDate, newDescription) {
     await client.connect();
     var rep = await dbo.collection("tasks").insertOne({ "groupId": groupId, "groupName": groupName, "title": newTitle, "limited_date": newDate, "description": newDescription, "status": "todo" });
+    client.close();
+    return rep;
+}
+
+exports.check_if_group_exist = async function (groupName) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").findOne({ "groupName": groupName });
     client.close();
     return rep;
 }
