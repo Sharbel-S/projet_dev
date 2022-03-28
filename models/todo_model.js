@@ -5,7 +5,7 @@ const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/accountExis
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
 var today = new Date();
-var date = today.getFullYear() + '-' + (today.getMonth() + 1) + +  '-' + today.getDate();
+var date = today.getFullYear() + '-' + (today.getMonth()+1) +  '-' + today.getDate();
 var mongodb = require('mongodb');
 
 
@@ -59,6 +59,7 @@ exports.change_todo_title = async function () {
 
 exports.add_new_todo_group = async function (userId, groupName, groupColor) {
     await client.connect();
+    console.log(date);
     var rep = await dbo.collection("tasks_groups").insertOne({ "userId": userId, "group": groupName, "color": groupColor, "creationDate": date });
     client.close();
     return rep;
@@ -99,16 +100,24 @@ exports.edit_todo_info = async function (taskId, newTitle, newDescription, newDa
     return rep;
 }
 
-exports.set_todo_status_to_todo = async function(taskId) {
+exports.set_todo_status_to_todo = async function (taskId) {
     await client.connect();
-    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "todo"} });
+    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "todo" } });
     client.close();
     return rep;
 }
 
-exports.set_todo_status_to_done = async function(taskId) {
+exports.set_todo_status_to_done = async function (taskId) {
     await client.connect();
-    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "checked"} });
+    var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "checked" } });
     client.close();
     return rep;
 }
+
+exports.add_new_todo = async function (groupId, groupName, newTitle, newDate, newDescription) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").insertOne({ "groupId": groupId, "groupName": groupName, "title": newTitle, "limited_date": newDate, "description": newDescription, "status": "todo" });
+    client.close();
+    return rep;
+}
+

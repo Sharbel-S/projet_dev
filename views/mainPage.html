@@ -1,32 +1,20 @@
 {{> header}}
 
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addGroupModal"
-                data-bs-whatever="@fat">Add new group </button>
-        </div>
-        <div class="col">
-        </div>
-    </div>
-</div>
-
-
-{{#list}}
-{{#tasks}}
-
-ss
-
-{{/tasks}}
-{{/list}}
 
 <br>
 <div class="container">
     <div class="row">
         <div class="col">
+        </div>
+        <div class="col-8">
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                    data-bs-target="#addGroupModal" data-bs-whatever="@fat">Add new group </button>
+            </div>
+            <br>
             {{#list}}
-            <div id="{{_id}}" class="card border-{{color}} mb-3" style="max-width: 18rem;">
+
+            <div id="{{_id}}" class="card border-{{color}}">
                 <div class="card-header">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button value="{{_id}}" type="button"
@@ -34,25 +22,20 @@ ss
                         <button value="{{_id}}" type="button"
                             class="btn btn-outline-danger btn-sm deleteGroupButton">🗑️</button>
                     </div>
-                </div>
-                <div class="card-body text-dark">
-                    <h3> <a href="/tasks/{{group}}" class="card-title text-{{color}}"
-                            style="text-decoration:none">{{group}}</a> </h3>
-                    <p class="card-text">
 
-                        Nombre de tache total: 20 <br>
-                        Nombre de tache à faire: 15 <br>
-                    </p>
                 </div>
-                <div class="card-footer bg-transparent text-muted">created {{creationDate}}</div>
+                <div class="card-body">
+                    <h5 class="card-title text-{{color}}">{{group}}</h5>
+
+                    <p class="card-text"> created in : {{creationDate}}
+                    </p>
+                    <a href="/tasks/{{_id}}" class="btn btn-{{color}}">Go to tasks</a>
+                </div>
             </div>
+            <br>
             {{/list}}
         </div>
         <div class="col">
-            C
-        </div>
-        <div class="col">
-            C
         </div>
     </div>
 </div>
@@ -72,7 +55,6 @@ ss
                         <label for="groupInputModify" class="col-form-label">Group name:</label>
                         <input type="text" class="form-control" id="groupInputName">
                     </div>
-
                     <label class="col-form-label">Group color:</label>
                     <select id="colorGroupSelect" class="form-select" aria-label="Default select example">
                         <option selected>Chose a color</option>
@@ -111,7 +93,7 @@ ss
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button id="deleteButtonGroupConfirmation" type="button"
-                    class="btn btn-danger deleteButton2">Delete</button>
+                    class="btn btn-danger deleteButtonGroup">Delete</button>
             </div>
         </div>
     </div>

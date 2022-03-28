@@ -2,20 +2,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 	addEventToDeleteTodo();
 	addEventToEditTodo();
-	other();
-
 	addEventToSubmitNewTodoGroup();
-
 	addEventToDeleteGroup();
 	addEventToDeleteGroupConfirmation();
-
 	addEventToEditGroup();
 	addEventToEditGroupConfirmation();
-
 	addEventToEditTodoConfirmation();
 	addEventToSubmitDeleteTodo();
-
 	addEventToCheckBox();
+	addEventToAddTodo();
+	addEventToSubmitAddTodo();
 	/*
 	addEventSubmitNewTodoButton();
 	$('#box').append(
@@ -56,18 +52,24 @@ function addEventToEditGroupConfirmation() {
 		var id = $("#groupId").val();
 		var group = $("#editInputGroupName").val();
 		var color = $("#editColorGroupSelect").val();
-		$.ajax({
-			url: '/editTodoGroup',
-			type: 'POST',
-			data: { "groupId": id, "color": color, "group": group },
-			success: function (response) {
-				alert('Group edited successfully.');
-			},
-			error: function (err) {
-				alert('Something went wrong, please try again');
-			}
-		});
-		$('#editGroupModal').modal('hide');
+		if (group === "") {
+			alert("Group name cannot be empty");
+		}
+		else {
+			$.ajax({
+				url: '/editTodoGroup',
+				type: 'POST',
+				data: { "groupId": id, "color": color, "group": group },
+				success: function (response) {
+					alert('Group edited successfully.');
+				},
+				error: function (err) {
+					alert('Something went wrong, please try again');
+				}
+			});
+			$('#editGroupModal').modal('hide');
+		}
+
 	});
 }
 
@@ -90,7 +92,7 @@ function addEventToEditGroup() {
 }
 
 function addEventToDeleteGroupConfirmation() {
-	$('#deleteButtonGroupConfirmation').on('click', function () {
+	$('.deleteButtonGroup').on('click', function () {
 		var id = $("#hElementForId").text();
 		$.ajax({
 			url: '/deleteGroup',
@@ -122,20 +124,25 @@ function addEventToSubmitNewTodoGroup() {
 	$('#submitNewTodoGroupButton').on('click', function () {
 		var groupInputName = $("#groupInputName").val();
 		var colorGroupSelect = $("#colorGroupSelect").val();
-		$.ajax({
-			url: '/addNewTodoGroup',
-			type: 'POST',
-			data: { "group": groupInputName, "color": colorGroupSelect },
-			success: function (response) {
+		if (groupInputName === "") {
+			alert("Group name cannot be empty");
+		}
+		else {
+			$.ajax({
+				url: '/addNewTodoGroup',
+				type: 'POST',
+				data: { "group": groupInputName, "color": colorGroupSelect },
+				success: function (response) {
 
-				alert('Group added successfully.');
-			},
-			error: function (err) {
+					alert('Group added successfully.');
+				},
+				error: function (err) {
 
-				alert('Something went wrong, please try again');
-			}
-		});
-		$('#addGroupModal').modal('hide');
+					alert('Something went wrong, please try again');
+				}
+			});
+			$('#addGroupModal').modal('hide');
+		}
 	});
 
 }
@@ -171,6 +178,7 @@ function addEventToDeleteTodo() {
 function addEventToSubmitDeleteTodo() {
 	$('.deleteButton2').on('click', function () {
 		var id = $("#modal_body2").text();
+		console.log("id", id);
 		$.ajax({
 			url: '/deleteTask',
 			type: 'DELETE',
@@ -190,7 +198,7 @@ function addEventToSubmitDeleteTodo() {
 function addEventToEditTodo() {
 	$('.editButton').on('click', function () {
 		var lignId = $(this).closest(".divTableRow").find("#lignId").text();
-		var lignGroup = $(this).closest(".divTableRow").find("#lignGroup").text();
+		var groupName = $("#groupNameP").text();
 		var lignDate = $(this).closest(".divTableRow").find("#lignDate").text();
 		var lignTitle = $(this).closest(".divTableRow").find("#lignTitle").text();
 		var lignDetails = $(this).closest(".divTableRow").find("#lignDetails").text();
@@ -198,40 +206,49 @@ function addEventToEditTodo() {
 		$("#idInputModify").val(lignId);
 		$("#titleInputModify").val(lignTitle);
 		$("#dateInputModify").val(lignDate);
-		$("#groupInputModify").val(lignGroup);
+		$("#groupInputModify").val(groupName);
 		$("#descriptionInputModify").val(lignDetails);
 		$('#editTodoModal').modal('show');
 	});
 }
 
 
-function other() {
 
-
-
-	$("#groupInputAdd").on("input", function () {
-		if (this.value === "") {
-			$("#select").prop("disabled", false);
-		}
-		else {
-			$("#select").prop("disabled", true);
-		}
-
+function addEventToAddTodo() {
+	$('.addTodoButton').on('click', function () {
+		$('#addTodoModal').modal('show');
 	});
-
-	$("#select").on("input", function () {
-		if (this.value != "Select group") {
-			$("#groupInputAdd").prop("disabled", true);
-		}
-		else {
-			$("#groupInputAdd").prop("disabled", false);
-
-		}
-	});
-
-
 }
 
+function addEventToSubmitAddTodo() {
+	$('#addButtonSubmit').on('click', function () {
+		var groupName = $("#groupNameP").text();
+		var groupId = $('#groupNameP').attr('class');
+
+		var newTitleTodo = $("#titleInputAdd").val();
+		var newDateTodo = $("#dateInputAdd").val();
+		var newDescriptionTodo = $("#descriptionInputAdd").val();
+
+		if (newTitleTodo === "") {
+			alert("Title task cannot be empty");
+		}
+		else {
+			$.ajax({
+				url: '/addNewTodo',
+				type: 'POST',
+				data: { "groupId": groupId, "groupName": groupName, "title": newTitleTodo, "limited_date": newDateTodo, "description": newDescriptionTodo },
+				success: function (response) {
+					alert('Task added successfully.');
+				},
+				error: function (err) {
+
+					alert('Something went wrong, please try again');
+				}
+			});
+			$('#addTodoModal').modal('hide');
+		}
+	});
+}
 
 
 function addEventToCheckBox() {
@@ -268,5 +285,4 @@ function addEventToCheckBox() {
 			});
 		}
 	});
-
 }

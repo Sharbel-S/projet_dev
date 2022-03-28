@@ -133,25 +133,13 @@ app.post('/modifyTodo', (req, res) => {
     res.send("done !");
   })
 });
-/*
-app.post('/signInPage', (req, res) => {
-  account_model.check_email_password_account(req.body.email, req.body.password).then((response) => {
-    if (response == null) {
-      req.flash('info', 'Incorect username or password');
-      res.redirect('/signInPage');
-    }
-    else {
-      todo_model.getTodoList().then((response) => {
-        res.locals.authenticated = true;
-        req.session.email = req.body.email;
-        var groupList = todo_model.get_all_groups_for_user(req.body.email);
-        res.render('./homePage', { list: response, groupList})
-      });
-    }
-  }
-  );
+
+app.post('/addNewTodo', (req, res) => {
+  todo_model.add_new_todo(req.body.groupId, req.body.groupName, req.body.title, req.body.limited_date, req.body.description).then((response) => {
+    res.send("done !");
+  })
 });
-*/
+
 
 
 app.get('/logout', (req, res) => {
@@ -174,7 +162,7 @@ app.get('/tasks/:id', (req, res) => {
   }
   else {
     todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
-      res.render('tasksList', { list: response,  });
+      res.render('tasksList', { list: response, });
     });
   }
 
@@ -182,13 +170,12 @@ app.get('/tasks/:id', (req, res) => {
 
 app.get('/test', is_authenticated, (req, res) => {
   todo_model.get_all_tasks_of_group("623ee300dda95d7d76975939").then((response) => {
-    res.render('tasksList', { list: response,  });
+    var grpName = response[0].groupName;
+    var grpId = response[0].groupId;
+    res.render('tasksList', { list: response, grpName, grpId });
   });
 });
 
-app.get('/addNewTodo', is_authenticated, (req, res) => {
-  res.render('addNewTodo');
-});
 
 
 app.post('/addTodo', (req, res) => {
