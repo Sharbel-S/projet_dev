@@ -130,99 +130,75 @@ function addNewTodo() {
 
 
 exports.askForModify = function (rl) {
-    if (isConnected) {
-        if (isGroupSelected) {
-            rl.question('enter the title: ', (title) => {
-                todoTitle = title;
-                controler.checkIfTitleExist(title).then((response) => {
-                    if (response) {
-                        rl.question('enter the new title: ', (Newtitle) => {
-                            todoNewTitle = Newtitle;
-                            controler.modifyActualTitle(todoTitle, todoNewTitle);
-                        })
-                    }
-                    else {
-                        console.log("Title doesn't exit !");
-                    }
-                });
-
-
-            });
-        }
-        else {
-            console.log("You must choose a group !")
-        }
-
-    }
-    else {
-        console.log(chalk.yellow("You must to login !"));
-    }
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
+        controler.checkIfTitleExist(title).then((response) => {
+            if (response) {
+                rl.question('enter the new title: ', (Newtitle) => {
+                    todoNewTitle = Newtitle;
+                    controler.modifyActualTitle(todoTitle, todoNewTitle);
+                })
+            }
+            else {
+                console.log("Title doesn't exit !");
+            }
+        });
+    });
 }
 
 exports.askForModifyTheDate = function (rl) {
-    if (isConnected) {
-        if (isGroupSelected) {
-            rl.question('enter the date: ', (date) => {
-                todoDate = date;
-                rl.question('enter the new date: ', (NewDate) => {
-                    todoNewDate = newDate;
-                    controler.modifyActualDate(todoDate, todoNewDate);
-                })
-            });
-        }
-        else {
-            console.log("You must choose a group !")
-        }
-
-    }
-    else {
-        console.log(chalk.yellow("You must to login !"));
-    }
+    rl.question('enter the date: ', (date) => {
+        todoDate = date;
+        rl.question('enter the new date: ', (NewDate) => {
+            todoNewDate = newDate;
+            controler.modifyActualDate(todoDate, todoNewDate);
+        })
+    });
 }
 
 exports.askForModifyTheDetails = function (rl) {
+    rl.question('enter the details: ', (details) => {
+        todoDetails = details;
+        rl.question('enter the new details: ', (Newdetails) => {
+            todoNewDetails = Newdetails;
+            controler.modifyActualDetails(todoDetails, todoNewDetails);
+        })
+    });
+}
+
+exports.askForColumnToModify = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
-            rl.question('enter the details: ', (details) => {
-                todoDetails = details;
-                rl.question('enter the new details: ', (Newdetails) => {
-                    todoNewDetails = Newdetails;
-                    controler.modifyActualDetails(todoDetails, todoNewDetails);
-                })
-            });
+            return new Promise((resolve, reject) => {
+                rl.question('enter the column you want to modify :\n -title\n  -date\n  -description\n ', (response) => {
+                    resolve();
+                    switch (response) {
+                        case "title":
+                            askForModify(rl);
+                            break;
+
+                        case "date":
+                            askForModifyTheDate(rl);
+                            break;
+
+                        case "description":
+                            askForModifyTheDetails(rl);
+                            break;
+
+                        default:
+                            console.log(chalk.red('Column not found'));
+                    }
+                });
+            })
         }
         else {
             console.log("You must choose a group !")
         }
-
     }
     else {
         console.log(chalk.yellow("You must to login !"));
     }
-}
 
-exports.askForColumnToModify = function (rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter the column you want to modify :\n -title\n  -date\n  -details\n ', (response) => {
-            resolve();
-            switch (response) {
-                case "Title":
-                    askForModify(rl);
-                    break;
-
-                case "Date":
-                    askForModifyTheDate(rl);
-                    break;
-
-                case "Details":
-                    askForModifyTheDetails(rl);
-                    break;
-
-                default:
-                    console.log(chalk.red('Column not found'));
-            }
-        });
-    })
 }
 
 exports.askForEmailToSignUp = function (rl) {

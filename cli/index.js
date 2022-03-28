@@ -19,7 +19,7 @@ rl.on('line', (argument) => {
 
   switch (listArgument[0]) {
 
-    case "add":
+    case "addtodo":
       view.askForTitleToAddNewTodo(rl);
       break;
 
