@@ -4,6 +4,8 @@ const uri = "mongodb+srv://shs:Methode123@cluster0.bude8.mongodb.net/test?retryW
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 var dbo = client.db("Todos");
 const chalk = require("chalk");
+var todo_model = require('../models/todo_model');
+const { response } = require('express');
 
 
 exports.addDataToDataBase = function(todoTitle,todoSubject) {
@@ -33,6 +35,40 @@ exports.modifyActualTitle = function(todoTitle, todoNewTitle) {
       })
   });
 }
+exports.modifyActualDate = function(todoDate, todoNewDate) {
+  client.connect(err => {
+  dbo.collection("TodoList").replaceOne(
+    { "title": todoDate },
+    { "title": todoNewDate }
+    , function (err) {
+      if (err) {
+        console.log(chalk.red("something went wrong, please try again."));
+      } else {
+        console.log();
+        console.log(chalk.green("Date has been modified successfully ✔\n"));
+      }
+      client.close();
+    })
+});
+}
+
+exports.modifyActualDetails = function(todoDetails, todoNewDetails) {
+  client.connect(err => {
+  dbo.collection("TodoList").replaceOne(
+    { "title": todoDetails },
+    { "title": todoNewDetails }
+    , function (err) {
+      if (err) {
+        console.log(chalk.red("something went wrong, please try again."));
+      } else {
+        console.log();
+        console.log(chalk.green("Details has been modified successfully ✔\n"));
+      }
+      client.close();
+    })
+});
+}
+
 
 exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     client.connect(err => {
@@ -42,7 +78,7 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
         client.close();
       });
     });
-  }
+  } 
 
 
   exports.listAllTodoInDataBase = function() {
@@ -77,15 +113,17 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     if(rep != null){
 
         console.log("Connected with success !");
+        todo_model.get_all_groups_for_user(emailLog).then((response)=>{
+          console.log(response);
+        })
         return rep._id.toString();
     }
     else {
         console.log("Username or Password incorrect !");
         return null;
     }
-
-
   }
+
 
   exports.checkIfTitleExist = async function (title){
     await client.connect();
@@ -100,4 +138,3 @@ exports.addNewAccountToDataBase = function(todoEmail, todoPassword) {
     }
 
   }
-

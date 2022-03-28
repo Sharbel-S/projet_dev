@@ -21,7 +21,7 @@ rl.on('line', (argument) => {
 
     case "add":
       
-        view.askForTitle(rl);
+        view.askForAddTheTitle(rl);
       
       break;
 
@@ -53,8 +53,12 @@ rl.on('line', (argument) => {
       break;
 
     case "modify":
-      view.askForModify(rl);
+      view.askForColumnToModify(rl);
       break;
+
+    case "group":
+      view.askForGroup(rl);
+      break;  
 
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
