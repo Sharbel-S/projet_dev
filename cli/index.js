@@ -65,6 +65,10 @@ rl.on('line', (argument) => {
     case "addgroup":
       view.askForNameForNewGroup(rl);
       break;
+
+    case "removegroup":
+      view.askForGroupNameToRemove(rl);
+      break;
       
     default:
       console.log(chalk.red('Commande not found, type info for more information'));

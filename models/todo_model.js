@@ -59,7 +59,6 @@ exports.change_todo_title = async function () {
 
 exports.add_new_todo_group = async function (userId, groupName, groupColor) {
     await client.connect();
-    console.log(date);
     var rep = await dbo.collection("tasks_groups").insertOne({ "userId": userId, "group": groupName, "color": groupColor, "creationDate": date });
     client.close();
     return rep;
@@ -130,7 +129,14 @@ exports.check_if_group_exist = async function (groupName) {
 
 exports.delete_selected_todo_by_name = async function (title, groupSelected, groupSelectedId) {
     await client.connect();
-    var rep = await dbo.collection("tasks").deleteOne({ "title": title, "groupName":groupSelected, "groupId": groupSelectedId });
+    var rep = await dbo.collection("tasks").deleteOne({ "title": title, "groupName": groupSelected, "groupId": groupSelectedId });
+    client.close();
+    return rep;
+}
+
+exports.delete_selected_group_by_name = async function (idUser, group) {
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").deleteOne({ "userId": idUser, "group": group });
     client.close();
     return rep;
 }
