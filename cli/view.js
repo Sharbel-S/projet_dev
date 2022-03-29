@@ -5,10 +5,10 @@ var todo_model = require('../models/todo_model');
 var account_model = require('../models/account_model');
 
 var todoTitle = "";
-var todoDetails = "";
+var todoDescription = "";
 var todoNewTitle = "";
 var todoNewDate = "";
-var todoNewDetails = "";
+var todoNewDescription = "";
 var newEmail = "";
 var newPassord = "";
 var todoDate = "";
@@ -26,7 +26,7 @@ exports.printStartProgramme = function () {
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
     console.log("");
     console.log("----------------------------------")
-    console.log(chalk.cyanBright("type info for details."));
+    console.log(chalk.cyanBright("type info for description."));
     console.log(chalk.cyanBright("type add to add new todo"));
     console.log(chalk.cyanBright("type modify to change a todo"));
     console.log(chalk.cyanBright("type remove to delete a todo"));
@@ -104,7 +104,7 @@ exports.askForTitleToAddNewTodo = function (rl) {
 function askForDescriptionToAddNewTodo(rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter a Description: ', (inputDescription) => {
-            todoDetails = inputDescription;
+            todoDescription = inputDescription;
             resolve();
             askForDateToAddNewTodo(rl);
         });
@@ -122,7 +122,7 @@ function askForDateToAddNewTodo(rl) {
 }
 
 function addNewTodo() {
-    todo_model.add_new_todo(groupSelectedId, groupSelected, todoTitle, todoDate, todoDetails).then((response) => {
+    todo_model.add_new_todo(groupSelectedId, groupSelected, todoTitle, todoDate, todoDescription).then((response) => {
         if (response != null) {
             console.log("Data inserted successfully !")
         }
@@ -140,7 +140,7 @@ function askForTitleToModifyTodo(rl) {
             if (response) {
                 rl.question('enter the new title: ', (Newtitle) => {
                     todoNewTitle = Newtitle;
-                    todo_model.modify_actual_title_for_todo(groupSelectedId, title, todoNewTitle);
+                    todo_model.modify_actual_title_for_todo(groupSelectedId, todoTitle, todoNewTitle);
                 })
             }
             else {
@@ -150,22 +150,22 @@ function askForTitleToModifyTodo(rl) {
     });
 }
 
-exports.askForModifyTheDate = function (rl) {
-    rl.question('enter the date: ', (date) => {
-        todoDate = date;
+function askForDateToModifyTodo (rl) {
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
         rl.question('enter the new date: ', (NewDate) => {
-            todoNewDate = newDate;
-            controler.modifyActualDate(todoDate, todoNewDate);
+            todoNewDate = NewDate;
+            todo_model.modify_actual_date_for_todo(groupSelectedId, todoTitle, todoNewDate);
         })
     });
 }
 
-exports.askForModifyTheDetails = function (rl) {
-    rl.question('enter the details: ', (details) => {
-        todoDetails = details;
-        rl.question('enter the new details: ', (Newdetails) => {
-            todoNewDetails = Newdetails;
-            controler.modifyActualDetails(todoDetails, todoNewDetails);
+function askForDescriptionToModifyTodo (rl) {
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
+        rl.question('enter the new description: ', (Newdetails) => {
+            todoNewDescription = Newdetails;
+            todo_model.modify_actual_description_for_todo(groupSelectedId ,todoTitle, todoNewDescription);
         })
     });
 }
@@ -182,11 +182,11 @@ exports.askForColumnToModify = function (rl) {
                             break;
 
                         case "date":
-                            askForModifyTheDate(rl);
+                            askForDateToModifyTodo(rl);
                             break;
 
                         case "description":
-                            askForModifyTheDetails(rl);
+                            askForDescriptionToModifyTodo(rl);
                             break;
 
                         default:
@@ -359,10 +359,10 @@ exports.signOut = function () {
     isConnected = false;
     isGroupSelected = false;
     todoTitle = "";
-    todoDetails = "";
+    todoDescription = "";
     todoNewTitle = "";
     todoNewDate = "";
-    todoNewDetails = "";
+    todoNewDescription = "";
     newEmail = "";
     newPassord = "";
     todoDate = "";
