@@ -12,11 +12,15 @@ exports.getAllTasksById = async function (groupId) {
 }
 
 exports.getGroupName = async function (groupId) {
-    var res = await todo_model.get_group_name_by_id(groupId);  
+    var res = await todo_model.get_group_name_by_id(groupId);
     return res.group;
 }
 
 exports.getGroupId = async function (groupId) {
-    var res = await todo_model.get_group_name_by_id(groupId);  
+    var res = await todo_model.get_group_name_by_id(groupId);
     return res._id.toString();
+}
+
+exports.addNewTodo = async function (body) {
+    await todo_model.add_new_todo(body.groupId, body.groupName, body.title, body.limited_date, body.description);
 }

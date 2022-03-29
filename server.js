@@ -136,18 +136,15 @@ app.post('/modifyTodo', (req, res) => {
 });
 
 app.post('/addNewTodo', (req, res) => {
-  todo_model.add_new_todo(req.body.groupId, req.body.groupName, req.body.title, req.body.limited_date, req.body.description).then((response) => {
-    res.send("done !");
-  })
+  dataTreatment.addNewTodo(req.body);
+  res.send("done");
 });
-
 
 
 app.get('/logout', (req, res) => {
   req.session = null;
   res.redirect('/');
 });
-
 
 app.use(is_authenticated);
 
@@ -162,16 +159,6 @@ app.get('/tasks/:id', is_authenticated, async (req, res) => {
   var grpId = await dataTreatment.getGroupId(req.params.id);
   res.render('tasksList', { list: response, grpName, grpId });
 });
-
-
-
-app.post('/addTodo', (req, res) => {
-  todo_model.insert_new_todo(req.session.email, req.body).then((response) => {
-    console.log(response);
-  })
-});
-
-
 
 
 function is_authenticated(req, res, next) {
