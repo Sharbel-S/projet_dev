@@ -1,7 +1,4 @@
-
-
 document.addEventListener('DOMContentLoaded', (event) => {
-
 	addEventToDeleteTodo();
 	addEventToEditTodo();
 	addEventToSubmitNewTodoGroup();
@@ -14,16 +11,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	addEventToCheckBox();
 	addEventToAddTodo();
 	addEventToSubmitAddTodo();
-	/*
-	addEventSubmitNewTodoButton();
-	$('#box').append(
-		$('<div/>')
-			.attr("id", "newDiv1")
-			.addClass("newDiv purple bloated")
-			.append("<span/>")
-			.text("hello world")
-	);
-		*/
 })
 
 function addEventToEditTodoConfirmation() {

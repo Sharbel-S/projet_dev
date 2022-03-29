@@ -9,28 +9,6 @@ var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getD
 var mongodb = require('mongodb');
 
 
-exports.getTodoList = async function () {
-    await client.connect();
-    var rep = await dbo.collection("tasks").find({}).toArray();
-    client.close();
-    return rep;
-}
-
-exports.insert_new_todo = async function (title, date, details, group) {
-    await client.connect();
-    await dbo.collection("tasks").updateOne({ "group": group }, {
-        $push: {
-            "tasks": {
-                "title": title,
-                "date": date,
-                "status": "todo",
-                "details": details
-            }
-        }
-    }, { upsert: true });
-
-    client.close();
-}
 
 
 exports.get_all_groups_for_user = async function (userEmail) {
@@ -47,15 +25,12 @@ exports.get_all_tasks_of_group = async function (groupId) {
     return rep;
 }
 
-
 exports.delete_selected_todo = async function (id) {
     await client.connect();
     var rep = await dbo.collection("tasks").deleteOne({ "_id": id });
     client.close();
 }
 
-exports.change_todo_title = async function () {
-}
 
 exports.add_new_todo_group = async function (userId, groupName, groupColor) {
     await client.connect();
