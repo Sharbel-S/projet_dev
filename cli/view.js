@@ -34,6 +34,10 @@ exports.printStartProgramme = function () {
     console.log(chalk.cyanBright("type login to log to your account"));
     console.log(chalk.cyanBright("type list to print all available todos"));
     console.log(chalk.cyanBright("type exit to close the application"));
+    console.log(chalk.cyanBright("type signout to disconnect"));
+    console.log(chalk.cyanBright("type group to select your group"));
+    console.log(chalk.cyanBright("type add group to add a new group"));
+    console.log(chalk.cyanBright("type remove group to delete a group"));
     console.log("----------------------------------")
 }
 
@@ -129,7 +133,7 @@ function addNewTodo() {
 }
 
 
-exports.askForModify = function (rl) {
+exports.askForTitleToModifyTodo = function (rl) {
     rl.question('enter the title: ', (title) => {
         todoTitle = title;
         controler.checkIfTitleExist(title).then((response) => {
@@ -174,7 +178,7 @@ exports.askForColumnToModify = function (rl) {
                     resolve();
                     switch (response) {
                         case "title":
-                            askForModify(rl);
+                            askForTitleToModifyTodo(rl);
                             break;
 
                         case "date":
