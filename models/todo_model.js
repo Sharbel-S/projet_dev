@@ -155,16 +155,16 @@ exports.modify_actual_title_for_todo = async function (groupId, oldTitle, newTit
     return rep;
 }
 
-exports.modify_actual_date_for_todo = async function (groupId, oldDate, newDate) {
+exports.modify_actual_date_for_todo = async function (groupId, title, newDate) {
     await client.connect();
-    var rep = await dbo.collection("tasks").updateOne({ "groupId": groupId, "limited_date": oldDate }, { $set: { "limited_date": newDate } });
+    var rep = await dbo.collection("tasks").updateOne({ "groupId": groupId, "title": title }, { $set: { "limited_date": newDate } });
     client.close();
     return rep;
 }
 
-exports.modify_actual_description_for_todo = async function (groupId, oldDescription, newDescription) {
+exports.modify_actual_description_for_todo = async function (groupId, title, newDescription) {
     await client.connect();
-    var rep = await dbo.collection("tasks").updateOne({ "groupId": groupId, "description": oldDescription }, { $set: { "description": newDescription } });
+    var rep = await dbo.collection("tasks").updateOne({ "groupId": groupId, "title": title }, { $set: { "description": newDescription } });
     client.close();
     return rep;
 }
