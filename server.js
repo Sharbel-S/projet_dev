@@ -129,14 +129,13 @@ app.post('/editTodoGroup', (req, res) => {
   })
 });
 
-app.post('/modifyTodo', (req, res) => {
-  todo_model.edit_todo_info(req.body.id, req.body.title, req.body.description, req.body.limited_date).then((response) => {
-    res.send("done !");
-  })
+app.post('/modifyTodo', async (req, res) => {
+  await dataTreatment.modifyTodo(req.body);
+  res.send("done");
 });
 
-app.post('/addNewTodo', (req, res) => {
-  dataTreatment.addNewTodo(req.body);
+app.post('/addNewTodo', async (req, res) => {
+  await dataTreatment.addNewTodo(req.body);
   res.send("done");
 });
 
