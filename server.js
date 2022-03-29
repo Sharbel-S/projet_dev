@@ -6,6 +6,7 @@ var flash = require('express-flash');
 const app = express();
 var account_model = require('./models/account_model');
 var todo_model = require('./models/todo_model');
+var dataTreatment = require('./buisness_model/dataTreatment');
 
 
 const bodyParser = require('body-parser');
@@ -150,10 +151,9 @@ app.get('/logout', (req, res) => {
 
 app.use(is_authenticated);
 
-app.get('/mainPage', is_authenticated, (req, res) => {
-  todo_model.get_all_groups_for_user(req.session.userId).then((response) => {
-    res.render('mainPage', { list: response });
-  });
+app.get('/mainPage', is_authenticated, async (req, res) => {
+  var response = await dataTreatment.getAllGroupsById(req.session.userId);
+  res.render('mainPage', { list: response });
 });
 
 app.get('/tasks/:id', (req, res) => {
