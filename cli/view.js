@@ -133,14 +133,14 @@ function addNewTodo() {
 }
 
 
-exports.askForTitleToModifyTodo = function (rl) {
+function askForTitleToModifyTodo(rl) {
     rl.question('enter the title: ', (title) => {
         todoTitle = title;
-        controler.checkIfTitleExist(title).then((response) => {
+        todo_model.check_if_title_exist(groupSelectedId, title).then((response) => {
             if (response) {
                 rl.question('enter the new title: ', (Newtitle) => {
                     todoNewTitle = Newtitle;
-                    controler.modifyActualTitle(todoTitle, todoNewTitle);
+                    todo_model.modify_actual_title_for_todo(groupSelectedId, title, todoNewTitle);
                 })
             }
             else {

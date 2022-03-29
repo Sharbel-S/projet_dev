@@ -35,6 +35,7 @@ exports.modifyActualTitle = function(todoTitle, todoNewTitle) {
       })
   });
 }
+
 exports.modifyActualDate = function(todoDate, todoNewDate) {
   client.connect(err => {
   dbo.collection("TodoList").replaceOne(
