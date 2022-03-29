@@ -25,8 +25,10 @@ exports.addNewTodo = async function (body) {
     await todo_model.add_new_todo(body.groupId, body.groupName, body.title, body.limited_date, body.description);
 }
 
-
-
 exports.modifyTodo = async function (body) {
     await todo_model.edit_todo_info(body.id, body.title, body.description, body.limited_date);
+}
+
+exports.editTodoGroup = async function (body) {
+    await todo_model.edit_todo_group_info(body.groupId, body.group, body.color);
 }

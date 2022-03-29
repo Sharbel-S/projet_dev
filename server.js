@@ -123,10 +123,9 @@ app.post('/getGroupInfo', (req, res) => {
   })
 });
 
-app.post('/editTodoGroup', (req, res) => {
-  todo_model.edit_todo_group_info(req.body.groupId, req.body.group, req.body.color).then((response) => {
-    res.send("done !");
-  })
+app.post('/editTodoGroup', async (req, res) => {
+  await dataTreatment.editTodoGroup(req.body);
+  res.send("done !");
 });
 
 app.post('/modifyTodo', async (req, res) => {
