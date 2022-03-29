@@ -157,15 +157,9 @@ app.get('/mainPage', is_authenticated, (req, res) => {
 });
 
 app.get('/tasks/:id', (req, res) => {
-  if (req.params.id === "clientSideController.js") {
-    res.render('/');
-  }
-  else {
-    todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
-      res.render('tasksList', { list: response, });
-    });
-  }
-
+  todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
+    res.render('tasksList', { list: response, });
+  });
 });
 
 app.get('/test', is_authenticated, (req, res) => {
