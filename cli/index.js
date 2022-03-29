@@ -67,7 +67,11 @@ rl.on('line', (argument) => {
     case "removegroup":
       view.askForGroupNameToRemove(rl);
       break;
-      
+
+    case "listtask":
+      view.printAllTasksOfGroup();
+      break;
+
     default:
       console.log(chalk.red('Commande not found, type info for more information'));
   }

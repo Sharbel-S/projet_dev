@@ -439,20 +439,52 @@ function removeGroup(group) {
 exports.printAllGroups = async function () {
     if (isConnected) {
         var respone = await todo_model.get_all_groups_for_user(idUser);
-        printJson(respone);
+        printGroupsJson(respone);
     }
     else {
         console.log(chalk.yellow("You must to signin !"));
     }
 }
 
-function printJson(response) {
+function printGroupsJson(response) {
     console.log("----------------------------------");
     console.log("----------------------------------");
     response.forEach((element, index) => {
         console.log(index);
         console.log("group: ", element.group);
         console.log("created in: ", element.creationDate);
+        console.log("----------------------------------");
+        console.log("----------------------------------");
+    });
+}
+
+exports.printAllTasksOfGroup = async function () {
+    if (isConnected) {
+        if (isGroupSelected) {
+            var respone = await todo_model.get_all_tasks_of_group(groupSelectedId);
+            printTasksJson(respone);
+        }
+        else {
+            console.log("You must choose a group !");
+        }
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+function printTasksJson(response) {
+    console.log("----------------------------------");
+    console.log("----------------------------------");
+    response.forEach((element, index) => {
+        console.log(index);
+        console.log("title: ", element.title);
+        console.log("description: ", element.description);
+        console.log("limit date: ", element.limited_date);
+        console.log("status: ", element.status == "todo" ? "⏳" : "✅");
+
+
+        //console.log("created in: ", element.creationDate);
         console.log("----------------------------------");
         console.log("----------------------------------");
     });
