@@ -141,3 +141,10 @@ exports.delete_selected_group_by_name = async function (idUser, group) {
     return rep;
 }
 
+exports.check_if_title_exist = async function (groupId, title) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").findOne({ "groupId": groupId, "title": title });
+    client.close();
+    return rep;
+}
+
