@@ -148,3 +148,9 @@ exports.check_if_title_exist = async function (groupId, title) {
     return rep;
 }
 
+exports.modify_actual_title_for_todo = async function (groupId, oldTitle, newTitle) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").updateOne({ "groupId": groupId, "title": oldTitle }, { $set: { "title": newTitle } });
+    client.close();
+    return rep;
+}
