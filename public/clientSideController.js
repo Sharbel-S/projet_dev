@@ -101,11 +101,9 @@ function addEventToDeleteGroupConfirmation() {
 			type: 'DELETE',
 			data: { "groupId": id },
 			success: function (response) {
-				$("#" + response).remove();
 				alert('Group removed successfully.');
 			},
 			error: function (err) {
-
 				alert('Something went wrong, please try again');
 			}
 		});
@@ -189,7 +187,6 @@ function addEventToSubmitDeleteTodo() {
 				alert('Task removed successfully.');
 			},
 			error: function (err) {
-
 				alert('Something went wrong, please try again');
 			}
 		});

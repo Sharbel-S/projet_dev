@@ -1,5 +1,5 @@
 var todo_model = require('../models/todo_model');
-
+var account_model = require('../models/account_model');
 
 exports.getAllGroupsById = async function (userId) {
     var res = await todo_model.get_all_groups_for_user(userId);
@@ -21,14 +21,102 @@ exports.getGroupId = async function (groupId) {
     return res._id.toString();
 }
 
-exports.addNewTodo = async function (body) {
+exports.addNewTodo = async function (body, res) {
     await todo_model.add_new_todo(body.groupId, body.groupName, body.title, body.limited_date, body.description);
+    res.send("done");
 }
 
-exports.modifyTodo = async function (body) {
+exports.modifyTodo = async function (body, res) {
     await todo_model.edit_todo_info(body.id, body.title, body.description, body.limited_date);
+    res.send("done");
 }
 
-exports.editTodoGroup = async function (body) {
+exports.editTodoGroup = async function (body, res) {
     await todo_model.edit_todo_group_info(body.groupId, body.group, body.color);
+    res.send("done !");
+}
+
+exports.getGroupInfo = async function (groupId, res) {
+    var response = await todo_model.get_group_info(groupId);
+    res.send(response[0]);
+}
+
+exports.changeTodoStatusToDone = async function (taskId, res) {
+    await todo_model.set_todo_status_to_done(taskId)
+    res.send("done");
+}
+
+exports.changeTodoStatus = async function (taskId, res) {
+    await todo_model.set_todo_status_to_todo(taskId);
+    res.send("done");
+}
+
+exports.deleteTask = async function (taskId, groupId, res) {
+    await todo_model.delete_selected_todo(taskId);
+    res.send("done");
+}
+
+exports.deleteGroup = async function (groupId, res) {
+    await todo_model.delete_selected_todo_group(groupId);
+    res.send("done")
+}
+
+exports.addNewTodoGroup = async function (userId, group, color, res) {
+    await todo_model.add_new_todo_group(userId, group, color);
+    res.send("done");
+}
+
+exports.tryToSignIn = async function (req, res) {
+    var response = await account_model.check_email_password_account(req.body.email, req.body.password);
+    if (response == null) {
+        showErrorMessageForSignIn(req, res);
+    }
+    else {
+        signIn(req, res, response);
+    }
+}
+
+function showErrorMessageForSignIn(req, res) {
+    req.flash('info', 'Incorect username or password');
+    res.redirect('/signInPage');
+}
+
+function signIn(req, res, response) {
+    req.session.userId = response;
+    res.locals.authenticated = true;
+    res.redirect('./mainPage');
+}
+
+exports.tryToSignUp = async function (req, res) {
+    var response = await account_model.check_if_email_already_used(req.body.email);
+    if (!response) {
+        checkIfPasswordAndConfimationCorrect(req, res, response);
+    }
+    else {
+        showErrorMessageForSignUp(req, res);
+    }
+}
+
+function showErrorMessageForSignUp(req, res) {
+    req.flash('info', 'Email already used');
+    res.redirect('/signUpPage');
+}
+
+function checkIfPasswordAndConfimationCorrect(req, res, response) {
+    if (req.body.password !== req.body.confirmPassword) {
+        req.flash('info', 'Password and confirmation are not the same');
+        res.redirect('/signUpPage');
+    }
+    else {
+        createAcount(req, res, response);
+    }
+}
+
+async function createAcount(req, res, response) {
+    var responseId = await account_model.create_new_account(req.body.email, req.body.password);
+    if (response != null) {
+        res.locals.authenticated = true;
+        req.session.userId = responseId;
+        res.redirect('./mainPage');
+    }
 }
