@@ -150,7 +150,7 @@ function askForTitleToModifyTodo(rl) {
     });
 }
 
-function askForDateToModifyTodo (rl) {
+function askForDateToModifyTodo(rl) {
     rl.question('enter the title: ', (title) => {
         todoTitle = title;
         rl.question('enter the new date: ', (NewDate) => {
@@ -160,12 +160,12 @@ function askForDateToModifyTodo (rl) {
     });
 }
 
-function askForDescriptionToModifyTodo (rl) {
+function askForDescriptionToModifyTodo(rl) {
     rl.question('enter the title: ', (title) => {
         todoTitle = title;
         rl.question('enter the new description: ', (Newdetails) => {
             todoNewDescription = Newdetails;
-            todo_model.modify_actual_description_for_todo(groupSelectedId ,todoTitle, todoNewDescription);
+            todo_model.modify_actual_description_for_todo(groupSelectedId, todoTitle, todoNewDescription);
         })
     });
 }
@@ -200,7 +200,7 @@ exports.askForColumnToModify = function (rl) {
         }
     }
     else {
-        console.log(chalk.yellow("You must to login !"));
+        console.log(chalk.yellow("You must to signin !"));
     }
 
 }
@@ -253,9 +253,9 @@ function askForConfirmationPassword(rl) {
     })
 }
 
-exports.askForEmailToLogin = function (rl) {
+exports.askForEmailToSignIn = function (rl) {
     if (isConnected) {
-        console.log("You must logout to sign in with another account");
+        console.log("You must sign out to sign in with another account");
     }
     else {
         return new Promise((resolve, reject) => {
@@ -311,7 +311,7 @@ exports.askForTitleToRemove = function (rl) {
         }
     }
     else {
-        console.log(chalk.yellow("You must to login !"));
+        console.log(chalk.yellow("You must to signin !"));
     }
 }
 
@@ -337,7 +337,7 @@ exports.askForGroup = function (rl) {
         })
     }
     else {
-        console.log(chalk.yellow("You must to login !"));
+        console.log(chalk.yellow("You must to signin !"));
     }
 }
 
@@ -384,7 +384,7 @@ exports.askForNameForNewGroup = async function (rl) {
         })
     }
     else {
-        console.log(chalk.yellow("You must to login !"));
+        console.log(chalk.yellow("You must to signin !"));
     }
 
 }
@@ -421,7 +421,7 @@ exports.askForGroupNameToRemove = async function (rl) {
         })
     }
     else {
-        console.log(chalk.yellow("You must to login !"));
+        console.log(chalk.yellow("You must to signin !"));
     }
 }
 
@@ -434,4 +434,26 @@ function removeGroup(group) {
             console.log("Something went wrong, please try again");
         }
     })
+}
+
+exports.printAllGroups = async function () {
+    if (isConnected) {
+        var respone = await todo_model.get_all_groups_for_user(idUser);
+        printJson(respone);
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+function printJson(response) {
+    console.log("----------------------------------");
+    console.log("----------------------------------");
+    response.forEach((element, index) => {
+        console.log(index);
+        console.log("group: ", element.group);
+        console.log("created in: ", element.creationDate);
+        console.log("----------------------------------");
+        console.log("----------------------------------");
+    });
 }

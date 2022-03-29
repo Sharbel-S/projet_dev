@@ -1,5 +1,4 @@
 var view = require('./view');
-var controler = require('./controler');
 const readline = require('readline');
 const chalk = require("chalk");
 
@@ -29,9 +28,8 @@ rl.on('line', (argument) => {
       view.printListeDetails();
       break;
 
-    case "list":
-      //listAllTodoInJson();
-      controler.listAllTodoInDataBase();
+    case "listgroup":
+      view.printAllGroups();
       break;
 
     case "remove":
@@ -42,8 +40,8 @@ rl.on('line', (argument) => {
       view.askForEmailToSignUp(rl);
       break;
 
-    case "login":
-      view.askForEmailToLogin(rl);
+    case "signin":
+      view.askForEmailToSignIn(rl);
       break;
 
     case "exit":
