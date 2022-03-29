@@ -2,6 +2,8 @@
 
 
 <br>
+
+
 <div class="container">
     <div class="row">
         <div class="col">
@@ -13,7 +15,6 @@
             </div>
             <br>
             {{#list}}
-
             <div id="{{_id}}" class="card border-{{color}}">
                 <div class="card-header">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -40,13 +41,14 @@
     </div>
 </div>
 
+<!-- Add Group modal -->
 
 <div class="modal fade" id="addGroupModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Ajouter un group</h5>
+                <h5 class="modal-title">Add new group</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -69,8 +71,7 @@
                     </select>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button id="submitNewTodoGroupButton" form="modal-details"
-                            class="btn btn-success ">Ajouter</button>
+                        <button id="submitNewTodoGroupButton" form="modal-details" class="btn btn-success ">Add</button>
                     </div>
                 </form>
             </div>
@@ -78,6 +79,7 @@
     </div>
 </div>
 
+<!-- Delete Group modal -->
 
 <div class="modal fade" id="deleteGroupConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -99,6 +101,8 @@
     </div>
 </div>
 
+
+<!-- Modify Group modal -->
 
 <div class="modal fade" id="editGroupModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
