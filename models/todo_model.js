@@ -169,3 +169,9 @@ exports.modify_actual_description_for_todo = async function (groupId, title, new
     return rep;
 }
 
+exports.get_group_name_by_id = async function (groupId) {
+    await client.connect();
+    var rep = await dbo.collection("tasks_groups").findOne({ _id: new mongodb.ObjectID(groupId) });
+    client.close();
+    return rep;
+} 

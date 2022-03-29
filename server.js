@@ -156,18 +156,11 @@ app.get('/mainPage', is_authenticated, async (req, res) => {
   res.render('mainPage', { list: response });
 });
 
-app.get('/tasks/:id', (req, res) => {
-  todo_model.get_all_tasks_of_group(req.params.id).then((response) => {
-    res.render('tasksList', { list: response, });
-  });
-});
-
-app.get('/test', is_authenticated, (req, res) => {
-  todo_model.get_all_tasks_of_group("623ee300dda95d7d76975939").then((response) => {
-    var grpName = response[0].groupName;
-    var grpId = response[0].groupId;
-    res.render('tasksList', { list: response, grpName, grpId });
-  });
+app.get('/tasks/:id', is_authenticated, async (req, res) => {
+  var response = await dataTreatment.getAllTasksById(req.params.id);
+  var grpName = await dataTreatment.getGroupName(req.params.id);
+  var grpId = await dataTreatment.getGroupId(req.params.id);
+  res.render('tasksList', { list: response, grpName, grpId });
 });
 
 
