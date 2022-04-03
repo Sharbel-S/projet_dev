@@ -1,8 +1,9 @@
 "use strict"
 const chalk = require("chalk");
-var controler = require('./controler.js');
 var todo_model = require('../models/todo_model');
 var account_model = require('../models/account_model');
+var dataTreatment = require('../buisness_model/dataTreatment');
+
 
 var todoTitle = "";
 var todoDescription = "";
@@ -26,53 +27,23 @@ exports.printStartProgramme = function () {
     console.log(chalk.green("/********* Welcome to MY_TODO *********/"));
     console.log("");
     console.log("----------------------------------")
-    console.log(chalk.cyanBright("type info for description."));
-    console.log(chalk.cyanBright("type add to add new todo"));
-    console.log(chalk.cyanBright("type modify to change a todo"));
-    console.log(chalk.cyanBright("type remove to delete a todo"));
+    console.log(chalk.cyanBright("type info for description"));
+    console.log(chalk.cyanBright("type signin to sign in to your account"));
     console.log(chalk.cyanBright("type signup to create an account"));
-    console.log(chalk.cyanBright("type login to log to your account"));
-    console.log(chalk.cyanBright("type list to print all available todos"));
-    console.log(chalk.cyanBright("type exit to close the application"));
+
+    console.log(chalk.cyanBright("type addgroup to add a new group"));
+    console.log(chalk.cyanBright("type removegroup to delete a group"));
+
+    console.log(chalk.cyanBright("type selectgroup to select your group"));
+
+    console.log(chalk.cyanBright("type addtodo to add new todo"));
+    console.log(chalk.cyanBright("type modifytodo to change a todo"));
+    console.log(chalk.cyanBright("type removetodo to delete a todo"));
     console.log(chalk.cyanBright("type signout to disconnect"));
-    console.log(chalk.cyanBright("type group to select your group"));
-    console.log(chalk.cyanBright("type add group to add a new group"));
-    console.log(chalk.cyanBright("type remove group to delete a group"));
+    console.log(chalk.cyanBright("type exit to close the application"));
     console.log("----------------------------------")
 }
 
-exports.printAddDetails = function () {
-    console.log("----------------------------------");
-    console.log(chalk.yellow("How to add new todo: "))
-    console.log();
-    console.log(("1- write: add"));
-    console.log(("2- enter the title of your todo and press Enter"));
-    console.log(("3- enter the Description of your todo and press Enter"));
-    console.log();
-    console.log(chalk.green("Well done! you have juste added a new todo to your list !"));
-    console.log("----------------------------------");
-}
-
-exports.printRemoveDetails = function () {
-    console.log("----------------------------------");
-    console.log(chalk.yellow("How to remove a todo: "))
-    console.log();
-    console.log(("1- write: remove"));
-    console.log(("2- enter the title of your todo that you want to remove and press Enter"));
-    console.log();
-    console.log(chalk.green("Well done! you have juste removed your todo!"));
-    console.log("----------------------------------");
-}
-
-exports.printListeDetails = function () {
-    console.log("----------------------------------");
-    console.log(chalk.yellow("How to print the list of todos: "))
-    console.log();
-    console.log(("1- write: list"));
-    console.log();
-    console.log(chalk.green("Well done! you have juste printed all your todos!"));
-    console.log("----------------------------------");
-}
 
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
@@ -279,7 +250,7 @@ function askForPasswordToLogin(rl) {
                     idUser = response;
                     isConnected = true;
                     console.log("Connected with success !");
-                    printAllGroupsForUser(idUser);
+                    getAllGroupsForUser(idUser);
                 }
                 else {
                     console.log("Username or Password incorrect !");
@@ -289,12 +260,56 @@ function askForPasswordToLogin(rl) {
     })
 }
 
-function printAllGroupsForUser(idUser) {
-    todo_model.get_all_groups_for_user(idUser).then((response) => {
-        console.log(response);
-    })
+async function getAllGroupsForUser(idUser) {
+    var response = await dataTreatment.getAllGroupsById(idUser);
+    printAllGroupsForUser(response);
 }
 
+function printAllGroupsForUser(response) {
+    console.log("----------------------------------");
+    console.log("----------------------------------");
+    response.forEach(async (element, index) => {
+        var groupColor = await getTheColorOfGroup(element.color);
+
+        console.log(chalk.hex(groupColor)(index));
+        console.log(chalk.hex(groupColor)("group: ", element.group));
+        console.log(chalk.hex(groupColor)("creation date: ", element.creationDate));
+
+        console.log("----------------------------------");
+        console.log("----------------------------------");
+    });
+}
+
+
+function getTheColorOfGroup(color) {
+    var colorForChalk;
+    switch (color) {
+        case "danger":
+            colorForChalk = "#FF0000"; // red color
+            break;
+        case "primary":
+            colorForChalk = "#0000FF"; // blue
+            break;
+        case "success":
+            colorForChalk = "#00FF00"; // green
+            break;
+        case "warning":
+            colorForChalk = "#FFFF00"; // yellow
+            break;
+        case "info":
+            colorForChalk = "##00FFFF"; // blue ciel
+            break;
+        case "secondary":
+            colorForChalk = "#808080"; // grey
+            break;
+        case "dark":
+            colorForChalk = "#000000"; // dark
+            break;
+        default:
+            colorForChalk = "#FFFFFF"; // white
+    }
+    return colorForChalk;
+}
 
 exports.askForTitleToRemove = function (rl) {
     if (isConnected) {
@@ -439,24 +454,13 @@ function removeGroup(group) {
 exports.printAllGroups = async function () {
     if (isConnected) {
         var respone = await todo_model.get_all_groups_for_user(idUser);
-        printGroupsJson(respone);
+        printAllGroupsForUser(respone);
     }
     else {
         console.log(chalk.yellow("You must to signin !"));
     }
 }
 
-function printGroupsJson(response) {
-    console.log("----------------------------------");
-    console.log("----------------------------------");
-    response.forEach((element, index) => {
-        console.log(index);
-        console.log("group: ", element.group);
-        console.log("created in: ", element.creationDate);
-        console.log("----------------------------------");
-        console.log("----------------------------------");
-    });
-}
 
 exports.printAllTasksOfGroup = async function () {
     if (isConnected) {
@@ -488,4 +492,70 @@ function printTasksJson(response) {
         console.log("----------------------------------");
         console.log("----------------------------------");
     });
+}
+
+exports.askForGroupNameToModify = async function (rl) {
+    if (isConnected) {
+        return new Promise((resolve, reject) => {
+            rl.question('enter the name of the group you want to modify: ', (group) => {
+                resolve();
+                checkIfGroupExist(group, rl);
+            });
+        })
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+async function checkIfGroupExist(group, rl) {
+    var response = await todo_model.check_if_group_exist(group);
+    if (response) {
+        groupSelectedId = response._id.toString();
+        colorNewGroup = response.color;
+        askForColumnToModifyGroup(rl);
+    }
+    else {
+        console.log("group not found");
+    }
+}
+
+function askForColumnToModifyGroup(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the column you want to modify :\n -name\n  -color\n ', (response) => {
+            resolve();
+            switch (response) {
+                case "name":
+                    askForNewGroupName(rl);
+                    break;
+
+                case "color":
+                    askForDateToModifyTodo(rl);
+                    break;
+
+                default:
+                    console.log(chalk.red('Column not found'));
+            }
+        });
+    })
+}
+
+function askForNewGroupName(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the new name for the group : ', (group) => {
+            resolve();
+            modifyNameIfNoErrors(group);
+        });
+    })
+}
+
+async function modifyNameIfNoErrors(group) {
+    var res = await dataTreatment.editTodoGroup(groupSelectedId, group, colorNewGroup);
+    if (res.modifiedCount == 1) {
+        console.log("Modified with success");
+    }
+    else {
+        console.log("Something went wrong, please try again !");
+    }
+
 }

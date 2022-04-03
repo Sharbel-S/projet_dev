@@ -23,16 +23,14 @@ rl.on('line', (argument) => {
       break;
 
     case "info":
-      view.printAddDetails();
-      view.printRemoveDetails();
-      view.printListeDetails();
+      view.printStartProgramme();
       break;
 
     case "listgroup":
       view.printAllGroups();
       break;
 
-    case "remove":
+    case "removetodo":
       view.askForTitleToRemove(rl);
       break;
 
@@ -48,11 +46,11 @@ rl.on('line', (argument) => {
       rl.close();
       break;
 
-    case "modify":
+    case "modifytodo":
       view.askForColumnToModify(rl);
       break;
 
-    case "group":
+    case "selectgroup":
       view.askForGroup(rl);
       break;
 
@@ -70,6 +68,10 @@ rl.on('line', (argument) => {
 
     case "listtask":
       view.printAllTasksOfGroup();
+      break;
+
+    case "modifygroup":
+      view.askForGroupNameToModify(rl);
       break;
 
     default:
