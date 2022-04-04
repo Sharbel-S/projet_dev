@@ -162,3 +162,8 @@ exports.checkGroupExistCLI = async function (group) {
     var response = await todo_model.check_if_group_exist(group);
     return response;
 }
+
+exports.addNewTodoCLI = async function (groupId, groupName, title, limited_date, description) {
+    var res = await todo_model.add_new_todo(groupId, groupName, title, limited_date, description);
+    return res;
+}

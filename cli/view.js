@@ -369,9 +369,7 @@ exports.askForTitleToAddNewTodo = function (rl) {
     else {
         console.log(chalk.yellow("You must to login !"));
     }
-
 }
-
 
 function askForDescriptionToAddNewTodo(rl) {
     return new Promise((resolve, reject) => {
@@ -393,15 +391,14 @@ function askForDateToAddNewTodo(rl) {
     })
 }
 
-function addNewTodo() {
-    todo_model.add_new_todo(groupSelectedId, groupSelected, todoTitle, todoDate, todoDescription).then((response) => {
-        if (response != null) {
-            console.log("Data inserted successfully !")
-        }
-        else {
-            console.log("Something went wrong, please try again");
-        }
-    })
+async function addNewTodo() {
+    var response = await dataTreatment.addNewTodoCLI(groupSelectedId, groupSelected, todoTitle, todoDate, todoDescription);
+    if (response != null) {
+        console.log("Data inserted successfully !")
+    }
+    else {
+        console.log("Something went wrong, please try again");
+    }
 }
 
 
