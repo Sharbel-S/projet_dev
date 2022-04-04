@@ -147,3 +147,8 @@ exports.tryToSignInCLI = async function (email, password) {
     var response = await account_model.check_email_password_account(email, password);
     return response;
 }
+
+exports.addNewTodoGroupCLI = async function (userId, group, color) {
+    var response = await todo_model.add_new_todo_group(userId, group, color);
+    return response;
+}

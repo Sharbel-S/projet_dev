@@ -143,6 +143,45 @@ exports.printAllGroups = async function () {
     }
 }
 
+
+exports.askForNameForNewGroup = async function (rl) {
+    if (isConnected) {
+        return new Promise((resolve, reject) => {
+            rl.question('enter name of the new group : ', (newGroupName) => {
+                nameNewGroup = newGroupName;
+                resolve();
+                askForColorForNewGroup(rl);
+            });
+        })
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+function askForColorForNewGroup(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter color of the new group : \n' +
+            'Available colors :\n ' +
+            'red - blue - green - yellow - dark - gray - white. \n ', (newGroupColor) => {
+                colorNewGroup = newGroupColor;
+                resolve();
+                createNewGroup();
+            });
+    })
+}
+
+async function createNewGroup() { // TODO : Faire les couleurs correctement
+    var response = await dataTreatment.addNewTodoGroupCLI(idUser, nameNewGroup, colorNewGroup);
+    if (response) {
+        console.log(chalk.green("Group has been created successfully !"));
+    }
+    else {
+        console.log("Something went wrong, please try again");
+    }
+}
+
+
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
@@ -411,43 +450,9 @@ exports.signOut = function () {
     console.log("sign out successfully !");
 }
 
-exports.askForNameForNewGroup = async function (rl) {
-    if (isConnected) {
-        return new Promise((resolve, reject) => {
-            rl.question('enter name of the new group : ', (newGroupName) => {
-                nameNewGroup = newGroupName;
-                resolve();
-                askForColorForNewGroup(rl);
-            });
-        })
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
 
-}
 
-function askForColorForNewGroup(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter color of the new group : \n' +
-            'Available colors :\n ' +
-            'red - blue - green - yellow - dark - gray - white. \n ', (newGroupColor) => {
-                colorNewGroup = newGroupColor;
-                resolve();
-                createNewGroup();
-            });
-    })
-}
 
-function createNewGroup() { // TODO : Faire les couleurs correctement
-    todo_model.add_new_todo_group(idUser, nameNewGroup, colorNewGroup).then((response) => {
-        if (response) {
-            console.log(chalk.green("Group has been created successfully ! "));
-        } else {
-            console.log("Something went wrong, please try again");
-        }
-    })
-}
 
 exports.askForGroupNameToRemove = async function (rl) {
     if (isConnected) {
