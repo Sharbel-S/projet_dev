@@ -289,6 +289,34 @@ async function modifyColorIfNoErrors(color) {
     }
 }
 
+
+exports.askForGroup = function (rl) {
+    if (isConnected) {
+        return new Promise((resolve, reject) => {
+            rl.question('enter the group of the todo you want to choose: ', (group) => {
+                resolve();
+                choseGroupIfExist(group);
+            });
+        })
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+async function choseGroupIfExist(group) {
+    var response = await dataTreatment.checkGroupExistCLI(group);
+    if (response != null) {
+        isGroupSelected = true;
+        groupSelected = group;
+        groupSelectedId = response._id.toString();
+        console.log("Group", groupSelected, "is now selected !");
+    }
+    else {
+        console.log("Group not found, please make sur that the group already exist !");
+    }
+}
+
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
@@ -511,33 +539,9 @@ function removeTodo(title) {
     })
 }
 
-exports.askForGroup = function (rl) {
-    if (isConnected) {
-        return new Promise((resolve, reject) => {
-            rl.question('enter the group of the todo you want to choose: ', (group) => {
-                resolve();
-                choseGroupIfExist(group);
-            });
-        })
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
 
-function choseGroupIfExist(group) {
-    todo_model.check_if_group_exist(group).then((response) => {
-        if (response != null) {
-            isGroupSelected = true;
-            groupSelected = group;
-            groupSelectedId = response._id.toString();
-            console.log("Group", groupSelected, "is now selected !");
-        }
-        else {
-            console.log("Group not found, please make sur that the group already exist !");
-        }
-    })
-}
+
+
 
 exports.signOut = function () {
     isConnected = false;
