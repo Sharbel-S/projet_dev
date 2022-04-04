@@ -142,3 +142,8 @@ exports.createAccountCLI = async function (email, password) {
     var responseId = await account_model.create_new_account(email, password);
     return responseId;
 }
+
+exports.tryToSignInCLI = async function (email, password) {
+    var response = await account_model.check_email_password_account(email, password);
+    return response;
+}

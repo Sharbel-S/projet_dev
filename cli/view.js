@@ -95,6 +95,44 @@ async function checkIfPasswordsAreCorrect(PasswordConfirmation) {
     }
 }
 
+exports.askForEmailToSignIn = function (rl) {
+    if (isConnected) {
+        console.log("You must sign out to sign in with another account");
+    }
+    else {
+        return new Promise((resolve, reject) => {
+            rl.question('enter your email: ', (email) => {
+                emailLog = email;
+                resolve();
+                askForPasswordToLogin(rl);
+            });
+        })
+    }
+}
+
+function askForPasswordToLogin(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter your password: ', (password) => {
+            passwordLog = password;
+            resolve();
+            checkEmailPassword();
+        });
+    })
+}
+
+async function checkEmailPassword() {
+    var res = await dataTreatment.tryToSignInCLI(emailLog, passwordLog);
+    if (res != null) {
+        idUser = res;
+        isConnected = true;
+        console.log("Connected with success !");
+        getAllGroupsForUser(idUser);
+    }
+    else {
+        console.log("Username or Password incorrect !");
+    }
+}
+
 
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
@@ -231,41 +269,10 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
 
 
 
-exports.askForEmailToSignIn = function (rl) {
-    if (isConnected) {
-        console.log("You must sign out to sign in with another account");
-    }
-    else {
-        return new Promise((resolve, reject) => {
-            rl.question('enter your email: ', (email) => {
-                emailLog = email;
-                resolve();
-                askForPasswordToLogin(rl);
-            });
-        })
-    }
-}
 
 
-function askForPasswordToLogin(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter your password: ', (password) => {
-            passwordLog = password;
-            resolve();
-            account_model.check_email_password_account(emailLog, passwordLog).then((response) => {
-                if (response != null) {
-                    idUser = response;
-                    isConnected = true;
-                    console.log("Connected with success !");
-                    getAllGroupsForUser(idUser);
-                }
-                else {
-                    console.log("Username or Password incorrect !");
-                }
-            })
-        });
-    })
-}
+
+
 
 async function getAllGroupsForUser(idUser) {
     var response = await dataTreatment.getAllGroupsById(idUser);
