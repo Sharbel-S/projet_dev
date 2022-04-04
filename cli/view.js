@@ -317,6 +317,35 @@ async function choseGroupIfExist(group) {
     }
 }
 
+exports.printAllTodosOfGroup = async function () {
+    if (isConnected) {
+        if (isGroupSelected) {
+            var respone = await dataTreatment.getAllTasksById(groupSelectedId);
+            printTasksJson(respone);
+        }
+        else {
+            console.log("You must choose a group !");
+        }
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+function printTasksJson(response) {
+    console.log("----------------------------------");
+    console.log("----------------------------------");
+    response.forEach((element, index) => {
+        console.log(index);
+        console.log("title: ", element.title);
+        console.log("description: ", element.description);
+        console.log("limit date: ", element.limited_date);
+        console.log("status: ", element.status == "todo" ? "⏳" : "✅");
+        console.log("----------------------------------");
+        console.log("----------------------------------");
+    });
+}
+
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
@@ -445,16 +474,7 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
     else {
         console.log(chalk.yellow("You must to signin !"));
     }
-
 }
-
-
-
-
-
-
-
-
 
 
 async function getAllGroupsForUser(idUser) {
@@ -476,7 +496,6 @@ function printAllGroupsForUser(response) {
         console.log("----------------------------------");
     });
 }
-
 
 function getTheColorOfGroup(color) {
     var colorForChalk;
@@ -539,10 +558,6 @@ function removeTodo(title) {
     })
 }
 
-
-
-
-
 exports.signOut = function () {
     isConnected = false;
     isGroupSelected = false;
@@ -571,37 +586,9 @@ exports.signOut = function () {
 
 
 
-exports.printAllTodosOfGroup = async function () {
-    if (isConnected) {
-        if (isGroupSelected) {
-            var respone = await todo_model.get_all_tasks_of_group(groupSelectedId);
-            printTasksJson(respone);
-        }
-        else {
-            console.log("You must choose a group !");
-        }
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
-
-function printTasksJson(response) {
-    console.log("----------------------------------");
-    console.log("----------------------------------");
-    response.forEach((element, index) => {
-        console.log(index);
-        console.log("title: ", element.title);
-        console.log("description: ", element.description);
-        console.log("limit date: ", element.limited_date);
-        console.log("status: ", element.status == "todo" ? "⏳" : "✅");
 
 
-        //console.log("created in: ", element.creationDate);
-        console.log("----------------------------------");
-        console.log("----------------------------------");
-    });
-}
+
 
 
 
