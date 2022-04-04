@@ -205,6 +205,90 @@ async function removeGroup(group) {
     }
 }
 
+exports.askForGroupNameToModify = async function (rl) {
+    if (isConnected) {
+        return new Promise((resolve, reject) => {
+            rl.question('enter the name of the group you want to modify: ', (group) => {
+                resolve();
+                checkIfGroupExist(group, rl);
+            });
+        })
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+async function checkIfGroupExist(group, rl) {
+    var response = await dataTreatment.checkGroupExistCLI(group);
+    if (response) {
+        groupSelectedId = response._id.toString();
+        colorNewGroup = response.color;
+        groupSelected = response.group;
+        askForColumnToModifyGroup(rl);
+    }
+    else {
+        console.log("group not found");
+    }
+}
+
+function askForColumnToModifyGroup(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the column you want to modify :\n -name\n -color\n ', (response) => {
+            resolve();
+            switch (response) {
+                case "name":
+                    askForNewGroupName(rl);
+                    break;
+
+                case "color":
+                    askForNewGroupColor(rl);
+                    break;
+
+                default:
+                    console.log(chalk.red('Column not found'));
+            }
+        });
+    })
+}
+
+function askForNewGroupName(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the new name for the group : ', (group) => {
+            resolve();
+            modifyNameIfNoErrors(group);
+        });
+    })
+}
+
+function askForNewGroupColor(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the new color for the group : \nfor red type: danger\nfor blue type info\nfor green type success\nfor dark type dark\nfor grey type secondary\nfor yellow type warning\n', (color) => {
+            resolve();
+            modifyColorIfNoErrors(color);
+        });
+    })
+}
+
+async function modifyNameIfNoErrors(group) {
+    var res = await dataTreatment.editTodoGroup(groupSelectedId, group, colorNewGroup);
+    if (res.modifiedCount == 1) {
+        console.log("Modified with success");
+    }
+    else {
+        console.log("Something went wrong, please try again !");
+    }
+}
+
+async function modifyColorIfNoErrors(color) {
+    var res = await dataTreatment.editTodoGroup(groupSelectedId, groupSelected, color);
+    if (res.modifiedCount == 1) {
+        console.log("Modified with success");
+    } else {
+        console.log("Something went wrong, please try again !");
+    }
+}
+
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
         if (isGroupSelected) {
@@ -515,86 +599,11 @@ function printTasksJson(response) {
     });
 }
 
-exports.askForGroupNameToModify = async function (rl) {
-    if (isConnected) {
-        return new Promise((resolve, reject) => {
-            rl.question('enter the name of the group you want to modify: ', (group) => {
-                resolve();
-                checkIfGroupExist(group, rl);
-            });
-        })
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
 
-async function checkIfGroupExist(group, rl) {
-    var response = await todo_model.check_if_group_exist(group);
-    if (response) {
-        groupSelectedId = response._id.toString();
-        colorNewGroup = response.color;
-        groupSelected = response.group;
-        askForColumnToModifyGroup(rl);
-    }
-    else {
-        console.log("group not found");
-    }
-}
 
-function askForColumnToModifyGroup(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter the column you want to modify :\n -name\n -color\n ', (response) => {
-            resolve();
-            switch (response) {
-                case "name":
-                    askForNewGroupName(rl);
-                    break;
 
-                case "color":
-                    askForNewGroupColor(rl);
-                    break;
 
-                default:
-                    console.log(chalk.red('Column not found'));
-            }
-        });
-    })
-}
 
-function askForNewGroupName(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter the new name for the group : ', (group) => {
-            resolve();
-            modifyNameIfNoErrors(group);
-        });
-    })
-}
 
-function askForNewGroupColor(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter the new color for the group : \nfor red type: danger\nfor blue type info\nfor green type success\nfor dark type dark\nfor grey type secondary\nfor yellow type warning\n', (color) => {
-            resolve();
-            modifyColorIfNoErrors(color);
-        });
-    })
-}
 
-async function modifyNameIfNoErrors(group) {
-    var res = await dataTreatment.editTodoGroup(groupSelectedId, group, colorNewGroup);
-    if (res.modifiedCount == 1) {
-        console.log("Modified with success");
-    }
-    else {
-        console.log("Something went wrong, please try again !");
-    }
-}
 
-async function modifyColorIfNoErrors(color) {
-    var res = await dataTreatment.editTodoGroup(groupSelectedId, groupSelected, color);
-    if (res.modifiedCount == 1) {
-        console.log("Modified with success");
-    } else {
-        console.log("Something went wrong, please try again !");
-    }
-}

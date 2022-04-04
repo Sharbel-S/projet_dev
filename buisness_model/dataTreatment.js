@@ -157,3 +157,8 @@ exports.deleteGroupByNameCLI = async function (userId, group) {
     var response = await todo_model.delete_selected_group_by_name(userId, group)
     return response;
 }
+
+exports.checkGroupExistCLI = async function (group) {
+    var response = await todo_model.check_if_group_exist(group);
+    return response;
+}
