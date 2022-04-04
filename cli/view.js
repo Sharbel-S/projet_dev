@@ -133,6 +133,15 @@ async function checkEmailPassword() {
     }
 }
 
+exports.printAllGroups = async function () {
+    if (isConnected) {
+        var respone = await dataTreatment.getAllGroupsById(idUser);
+        printAllGroupsForUser(respone);
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
 
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
@@ -465,15 +474,7 @@ function removeGroup(group) {
     })
 }
 
-exports.printAllGroups = async function () {
-    if (isConnected) {
-        var respone = await todo_model.get_all_groups_for_user(idUser);
-        printAllGroupsForUser(respone);
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
+
 
 
 exports.printAllTodosOfGroup = async function () {
