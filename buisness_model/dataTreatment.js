@@ -172,3 +172,37 @@ exports.deleteTodoByTitleCLI = async function (title, groupSelected, groupSelect
     var response = await todo_model.delete_selected_todo_by_name(title, groupSelected, groupSelectedId)
     return response;
 }
+
+exports.checkTitleExistCLI = async function (groupSelectedId, title) {
+    var response = await todo_model.check_if_title_exist(groupSelectedId, title);
+    return response;
+}
+
+exports.modifyTitleCLI = async function (groupSelectedId, todoTitle, todoNewTitle) {
+    var response = await todo_model.modify_actual_title_for_todo(groupSelectedId, todoTitle, todoNewTitle);
+    return response;
+}
+
+exports.modifyDateCLI = async function (groupSelectedId, todoTitle, todoNewDate) {
+    var response = await todo_model.modify_actual_date_for_todo(groupSelectedId, todoTitle, todoNewDate);
+    return response;
+}
+
+
+exports.modifyDescriptionCLI = async function (groupSelectedId, todoTitle, todoNewDescription) {
+    var response = await todo_model.modify_actual_description_for_todo(groupSelectedId, todoTitle, todoNewDescription);
+    return response;
+}
+
+exports.getTodoStauts = async function (title) {
+    var response = await todo_model.get_todo_status(title);
+    return response;
+}
+
+exports.changeTodoStatusToDoneCLI = async function (taskId) {
+    await todo_model.set_todo_status_to_done(taskId)
+}
+
+exports.changeTodoStatusCLI = async function (taskId) {
+    await todo_model.set_todo_status_to_todo(taskId);
+}

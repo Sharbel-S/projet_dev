@@ -1,7 +1,6 @@
 "use strict"
 const chalk = require("chalk");
 var todo_model = require('../models/todo_model');
-var account_model = require('../models/account_model');
 var dataTreatment = require('../buisness_model/dataTreatment');
 
 
@@ -132,6 +131,27 @@ async function checkEmailPassword() {
         console.log("Username or Password incorrect !");
     }
 }
+
+async function getAllGroupsForUser(idUser) {
+    var response = await dataTreatment.getAllGroupsById(idUser);
+    printAllGroupsForUser(response);
+}
+
+function printAllGroupsForUser(response) {
+    console.log("----------------------------------");
+    console.log("----------------------------------");
+    response.forEach(async (element, index) => {
+        var groupColor = await getTheColorOfGroup(element.color);
+
+        console.log(chalk.hex(groupColor)(index));
+        console.log(chalk.hex(groupColor)("group: ", element.group));
+        console.log(chalk.hex(groupColor)("creation date: ", element.creationDate));
+
+        console.log("----------------------------------");
+        console.log("----------------------------------");
+    });
+}
+
 
 exports.printAllGroups = async function () {
     if (isConnected) {
@@ -420,7 +440,6 @@ exports.askForTitleToRemove = function (rl) {
     }
 }
 
-
 async function removeTodo(title) {
     var respone = await dataTreatment.deleteTodoByTitleCLI(title, groupSelected, groupSelectedId);
     if (respone.deletedCount != 0) {
@@ -431,48 +450,11 @@ async function removeTodo(title) {
     }
 }
 
-function askForTitleToModifyTodo(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        todo_model.check_if_title_exist(groupSelectedId, title).then((response) => {
-            if (response) {
-                rl.question('enter the new title: ', (Newtitle) => {
-                    todoNewTitle = Newtitle;
-                    todo_model.modify_actual_title_for_todo(groupSelectedId, todoTitle, todoNewTitle);
-                })
-            }
-            else {
-                console.log("Title doesn't exit !");
-            }
-        });
-    });
-}
-
-function askForDateToModifyTodo(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        rl.question('enter the new date: ', (NewDate) => {
-            todoNewDate = NewDate;
-            todo_model.modify_actual_date_for_todo(groupSelectedId, todoTitle, todoNewDate);
-        })
-    });
-}
-
-function askForDescriptionToModifyTodo(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        rl.question('enter the new description: ', (Newdetails) => {
-            todoNewDescription = Newdetails;
-            todo_model.modify_actual_description_for_todo(groupSelectedId, todoTitle, todoNewDescription);
-        })
-    });
-}
-
 exports.askForColumnToModify = function (rl) { // TODO ajouter la modification de status
     if (isConnected) {
         if (isGroupSelected) {
             return new Promise((resolve, reject) => {
-                rl.question('enter the column you want to modify :\n -title\n -date\n -description\n ', (response) => {
+                rl.question('enter the column you want to modify :\n -title\n -date\n -description\n -status\n', (response) => {
                     resolve();
                     switch (response) {
                         case "title":
@@ -485,6 +467,9 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
 
                         case "description":
                             askForDescriptionToModifyTodo(rl);
+                            break;
+                        case "status":
+                            changeTodoStatus(rl);
                             break;
 
                         default:
@@ -502,25 +487,89 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
     }
 }
 
-
-async function getAllGroupsForUser(idUser) {
-    var response = await dataTreatment.getAllGroupsById(idUser);
-    printAllGroupsForUser(response);
+function askForTitleToModifyTodo(rl) {
+    rl.question('enter the title: ', async (title) => {
+        todoTitle = title;
+        var response = await dataTreatment.checkTitleExistCLI(groupSelectedId, title);
+        if (response) {
+            rl.question('enter the new title: ', (Newtitle) => {
+                todoNewTitle = Newtitle;
+                modifyTodoTitle();
+            })
+        }
+        else {
+            console.log("Title doesn't exit !");
+        }
+    });
 }
 
-function printAllGroupsForUser(response) {
-    console.log("----------------------------------");
-    console.log("----------------------------------");
-    response.forEach(async (element, index) => {
-        var groupColor = await getTheColorOfGroup(element.color);
+async function modifyTodoTitle() {
+    var response = await dataTreatment.modifyTitleCLI(groupSelectedId, todoTitle, todoNewTitle);
+    if (response) {
+        console.log("Title has been modified !");
+    }
+    else {
+        console.log("Something went wrong, please try again !");
+    }
+}
 
-        console.log(chalk.hex(groupColor)(index));
-        console.log(chalk.hex(groupColor)("group: ", element.group));
-        console.log(chalk.hex(groupColor)("creation date: ", element.creationDate));
-
-        console.log("----------------------------------");
-        console.log("----------------------------------");
+function askForDateToModifyTodo(rl) {
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
+        rl.question('enter the new date: ', (NewDate) => {
+            todoNewDate = NewDate;
+            modifyTodoDate();
+        })
     });
+}
+
+async function modifyTodoDate() {
+    var response = await dataTreatment.modifyDateCLI(groupSelectedId, todoTitle, todoNewDate);
+    if (response) {
+        console.log("Date has been modified !");
+    }
+    else {
+        console.log("Something went wrong, please try again !");
+    }
+}
+
+function askForDescriptionToModifyTodo(rl) {
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
+        rl.question('enter the new description: ', (Newdetails) => {
+            todoNewDescription = Newdetails;
+            modifyTodoDescription();
+        })
+    });
+}
+
+
+async function modifyTodoDescription() {
+    var response = await dataTreatment.modifyDescriptionCLI(groupSelectedId, todoTitle, todoNewDescription);
+    if (response) {
+        console.log("Description has been modified !");
+    }
+    else {
+        console.log("Something went wrong, please try again !");
+    }
+}
+
+function changeTodoStatus(rl) {
+    rl.question('enter the title: ', (title) => {
+        todoTitle = title;
+        getTodoStatusAndChangeIt();
+    });
+}
+async function getTodoStatusAndChangeIt() {
+    var response = await dataTreatment.getTodoStauts(todoTitle);
+    var taskId = response._id.toString();
+    if (response.status == "todo") {
+        dataTreatment.changeTodoStatusToDoneCLI(taskId);
+        console.log("todo has been changed to done ! ");
+    } else {
+        dataTreatment.changeTodoStatusCLI(taskId);
+        console.log("todo has been changed to not done ! ");
+    }
 }
 
 function getTheColorOfGroup(color) {
@@ -552,11 +601,6 @@ function getTheColorOfGroup(color) {
     }
     return colorForChalk;
 }
-
-
-
-
-
 
 exports.signOut = function () {
     isConnected = false;

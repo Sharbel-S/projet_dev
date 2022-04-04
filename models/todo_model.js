@@ -74,6 +74,13 @@ exports.edit_todo_info = async function (taskId, newTitle, newDescription, newDa
     return rep;
 }
 
+exports.get_todo_status = async function (title) {
+    await client.connect();
+    var rep = await dbo.collection("tasks").findOne({"title" : title});
+    client.close();
+    return rep;
+}
+
 exports.set_todo_status_to_todo = async function (taskId) {
     await client.connect();
     var rep = await dbo.collection("tasks").updateOne({ _id: new mongodb.ObjectID(taskId) }, { $set: { "status": "todo" } });
