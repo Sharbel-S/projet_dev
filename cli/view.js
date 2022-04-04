@@ -181,6 +181,29 @@ async function createNewGroup() { // TODO : Faire les couleurs correctement
     }
 }
 
+exports.askForGroupNameToRemove = async function (rl) {
+    if (isConnected) {
+        return new Promise((resolve, reject) => {
+            rl.question('enter the name of the group you want to remove: ', (group) => {
+                resolve();
+                removeGroup(group);
+            });
+        })
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+async function removeGroup(group) {
+    var respone = await dataTreatment.deleteGroupByNameCLI(idUser, group);
+    if (respone.deletedCount != 0) {
+        console.log("Group removed successfully !")
+    }
+    else {
+        console.log("Something went wrong, please try again");
+    }
+}
 
 exports.askForTitleToAddNewTodo = function (rl) {
     if (isConnected) {
@@ -454,30 +477,8 @@ exports.signOut = function () {
 
 
 
-exports.askForGroupNameToRemove = async function (rl) {
-    if (isConnected) {
-        return new Promise((resolve, reject) => {
-            rl.question('enter the name of the group you want to remove: ', (group) => {
-                resolve();
-                removeGroup(group);
-            });
-        })
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
 
-function removeGroup(group) {
-    todo_model.delete_selected_group_by_name(idUser, group).then((respone) => {
-        if (respone.deletedCount != 0) {
-            console.log("Group removed successfully !")
-        }
-        else {
-            console.log("Something went wrong, please try again");
-        }
-    })
-}
+
 
 
 

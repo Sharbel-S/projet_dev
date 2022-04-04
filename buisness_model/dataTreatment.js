@@ -152,3 +152,8 @@ exports.addNewTodoGroupCLI = async function (userId, group, color) {
     var response = await todo_model.add_new_todo_group(userId, group, color);
     return response;
 }
+
+exports.deleteGroupByNameCLI = async function (userId, group) {
+    var response = await todo_model.delete_selected_group_by_name(userId, group)
+    return response;
+}
