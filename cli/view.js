@@ -513,6 +513,7 @@ async function checkIfGroupExist(group, rl) {
     if (response) {
         groupSelectedId = response._id.toString();
         colorNewGroup = response.color;
+        groupSelected = response.group;
         askForColumnToModifyGroup(rl);
     }
     else {
@@ -522,7 +523,7 @@ async function checkIfGroupExist(group, rl) {
 
 function askForColumnToModifyGroup(rl) {
     return new Promise((resolve, reject) => {
-        rl.question('enter the column you want to modify :\n -name\n  -color\n ', (response) => {
+        rl.question('enter the column you want to modify :\n -name\n -color\n ', (response) => {
             resolve();
             switch (response) {
                 case "name":
@@ -530,7 +531,7 @@ function askForColumnToModifyGroup(rl) {
                     break;
 
                 case "color":
-                    askForDateToModifyTodo(rl);
+                    askForNewGroupColor(rl);
                     break;
 
                 default:
@@ -549,6 +550,15 @@ function askForNewGroupName(rl) {
     })
 }
 
+function askForNewGroupColor(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter the new color for the group : \nfor red type: danger\nfor blue type info\nfor green type success\nfor dark type dark\nfor grey type secondary\nfor yellow type warning\n', (color) => {
+            resolve();
+            modifyColorIfNoErrors(color);
+        });
+    })
+}
+
 async function modifyNameIfNoErrors(group) {
     var res = await dataTreatment.editTodoGroup(groupSelectedId, group, colorNewGroup);
     if (res.modifiedCount == 1) {
@@ -557,5 +567,13 @@ async function modifyNameIfNoErrors(group) {
     else {
         console.log("Something went wrong, please try again !");
     }
+}
 
+async function modifyColorIfNoErrors(color) {
+    var res = await dataTreatment.editTodoGroup(groupSelectedId, groupSelected, color);
+    if (res.modifiedCount == 1) {
+        console.log("Modified with success");
+    } else {
+        console.log("Something went wrong, please try again !");
+    }
 }
