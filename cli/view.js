@@ -30,18 +30,69 @@ exports.printStartProgramme = function () {
     console.log(chalk.cyanBright("type info for description"));
     console.log(chalk.cyanBright("type signin to sign in to your account"));
     console.log(chalk.cyanBright("type signup to create an account"));
-
     console.log(chalk.cyanBright("type addgroup to add a new group"));
     console.log(chalk.cyanBright("type removegroup to delete a group"));
-
     console.log(chalk.cyanBright("type selectgroup to select your group"));
-
     console.log(chalk.cyanBright("type addtodo to add new todo"));
     console.log(chalk.cyanBright("type modifytodo to change a todo"));
     console.log(chalk.cyanBright("type removetodo to delete a todo"));
     console.log(chalk.cyanBright("type signout to disconnect"));
     console.log(chalk.cyanBright("type exit to close the application"));
     console.log("----------------------------------")
+}
+
+exports.askForEmailToSignUp = function (rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter an email: ', (email) => {
+            newEmail = email;
+            resolve();
+            checkEmail(rl);
+        });
+    })
+}
+
+async function checkEmail(rl) {
+    var res = await dataTreatment.checkIfEmailAleadyUsedCLI(newEmail);
+    if (res) {
+        askForPasswordToSignUp(rl);
+    }
+    else {
+        console.log("Email already used !");
+    }
+}
+
+function askForPasswordToSignUp(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter a password: ', (Password) => {
+            newPassord = Password;
+            resolve();
+            askForConfirmationPassword(rl);
+        });
+    })
+}
+
+function askForConfirmationPassword(rl) {
+    return new Promise((resolve, reject) => {
+        rl.question('enter confimation password: ', (PasswordConfirmation) => {
+            resolve();
+            checkIfPasswordsAreCorrect(PasswordConfirmation);
+        });
+    })
+}
+
+async function checkIfPasswordsAreCorrect(PasswordConfirmation) {
+    if (PasswordConfirmation !== newPassord) {
+        console.log("Password and confirmation are not the same");
+    }
+    else {
+        var res = await dataTreatment.createAccountCLI(newEmail, newPassord);
+        if (res != null) {
+            idUser = res;
+            isConnected = true;
+            console.log("Account created successfully");
+            console.log("Connected with success !");
+        }
+    }
 }
 
 
@@ -141,11 +192,11 @@ function askForDescriptionToModifyTodo(rl) {
     });
 }
 
-exports.askForColumnToModify = function (rl) {
+exports.askForColumnToModify = function (rl) { // TODO ajouter la modification de status
     if (isConnected) {
         if (isGroupSelected) {
             return new Promise((resolve, reject) => {
-                rl.question('enter the column you want to modify :\n -title\n  -date\n  -description\n ', (response) => {
+                rl.question('enter the column you want to modify :\n -title\n -date\n -description\n ', (response) => {
                     resolve();
                     switch (response) {
                         case "title":
@@ -176,53 +227,9 @@ exports.askForColumnToModify = function (rl) {
 
 }
 
-exports.askForEmailToSignUp = function (rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter an email: ', (email) => {
-            newEmail = email;
-            resolve();
-            account_model.check_if_email_already_used(newEmail).then((response) => {
-                if (!response) {
-                    askForPasswordToSignUp(rl);
-                }
-                else {
-                    console.log("Email already used !");
-                }
-            })
-        });
-    })
-}
 
-function askForPasswordToSignUp(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter a password: ', (Password) => {
-            newPassord = Password;
-            resolve();
-            askForConfirmationPassword(rl);
-        });
-    })
-}
 
-function askForConfirmationPassword(rl) {
-    return new Promise((resolve, reject) => {
-        rl.question('enter confimation password: ', (PasswordConfirmation) => {
-            resolve();
-            if (PasswordConfirmation !== newPassord) {
-                console.log("Password and confirmation are not the same");
-            }
-            else {
-                account_model.create_new_account(newEmail, newPassord).then((response) => {
-                    if (response != null) {
-                        idUser = response;
-                        isConnected = true;
-                        console.log("Account created successfully");
-                        console.log("Connected with success !");
-                    }
-                });
-            }
-        });
-    })
-}
+
 
 exports.askForEmailToSignIn = function (rl) {
     if (isConnected) {
@@ -462,7 +469,7 @@ exports.printAllGroups = async function () {
 }
 
 
-exports.printAllTasksOfGroup = async function () {
+exports.printAllTodosOfGroup = async function () {
     if (isConnected) {
         if (isGroupSelected) {
             var respone = await todo_model.get_all_tasks_of_group(groupSelectedId);

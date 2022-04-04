@@ -121,7 +121,24 @@ async function createAcount(req, res, response) {
     }
 }
 
+
+// CLI
 exports.editTodoGroup = async function (groupId, group, color) {
-   var res =  await todo_model.edit_todo_group_info(groupId, group, color);
-   return res;
+    var res = await todo_model.edit_todo_group_info(groupId, group, color);
+    return res;
+}
+
+exports.checkIfEmailAleadyUsedCLI = async function (email) {
+    var emailUsed = await account_model.check_if_email_already_used(email)
+    if (!emailUsed) {
+        return true;
+    }
+    else {
+        return null;
+    }
+}
+
+exports.createAccountCLI = async function (email, password) {
+    var responseId = await account_model.create_new_account(email, password);
+    return responseId;
 }

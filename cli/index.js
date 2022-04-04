@@ -2,36 +2,20 @@ var view = require('./view');
 const readline = require('readline');
 const chalk = require("chalk");
 
-
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-
 view.printStartProgramme();
-
 
 rl.on('line', (argument) => {
   console.log("");
   const listArgument = argument.split(" ");
 
   switch (listArgument[0]) {
-
-    case "addtodo":
-      view.askForTitleToAddNewTodo(rl);
-      break;
-
     case "info":
       view.printStartProgramme();
-      break;
-
-    case "listgroup":
-      view.printAllGroups();
-      break;
-
-    case "removetodo":
-      view.askForTitleToRemove(rl);
       break;
 
     case "signup":
@@ -42,20 +26,8 @@ rl.on('line', (argument) => {
       view.askForEmailToSignIn(rl);
       break;
 
-    case "exit":
-      rl.close();
-      break;
-
-    case "modifytodo":
-      view.askForColumnToModify(rl);
-      break;
-
-    case "selectgroup":
-      view.askForGroup(rl);
-      break;
-
-    case "signout":
-      view.signOut();
+    case "listgroup":
+      view.printAllGroups();
       break;
 
     case "addgroup":
@@ -66,12 +38,36 @@ rl.on('line', (argument) => {
       view.askForGroupNameToRemove(rl);
       break;
 
-    case "listtask":
-      view.printAllTasksOfGroup();
-      break;
-
     case "modifygroup":
       view.askForGroupNameToModify(rl);
+      break;
+
+    case "selectgroup":
+      view.askForGroup(rl);
+      break;
+
+    case "listtodo":
+      view.printAllTodosOfGroup();
+      break;
+
+    case "addtodo":
+      view.askForTitleToAddNewTodo(rl);
+      break;
+
+    case "removetodo":
+      view.askForTitleToRemove(rl);
+      break;
+
+    case "modifytodo":
+      view.askForColumnToModify(rl);
+      break;
+
+    case "signout":
+      view.signOut();
+      break;
+
+    case "exit":
+      rl.close();
       break;
 
     default:
