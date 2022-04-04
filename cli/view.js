@@ -401,6 +401,35 @@ async function addNewTodo() {
     }
 }
 
+exports.askForTitleToRemove = function (rl) {
+    if (isConnected) {
+        if (isGroupSelected) {
+            return new Promise((resolve, reject) => {
+                rl.question('enter the title of the todo you want to delete: ', (title) => {
+                    resolve();
+                    removeTodo(title);
+                });
+            })
+        }
+        else {
+            console.log("You must choose a group !");
+        }
+    }
+    else {
+        console.log(chalk.yellow("You must to signin !"));
+    }
+}
+
+
+async function removeTodo(title) {
+    var respone = await dataTreatment.deleteTodoByTitleCLI(title, groupSelected, groupSelectedId);
+    if (respone.deletedCount != 0) {
+        console.log("Todo removed successfully !")
+    }
+    else {
+        console.log("Something went wrong, please try again");
+    }
+}
 
 function askForTitleToModifyTodo(rl) {
     rl.question('enter the title: ', (title) => {
@@ -524,36 +553,10 @@ function getTheColorOfGroup(color) {
     return colorForChalk;
 }
 
-exports.askForTitleToRemove = function (rl) {
-    if (isConnected) {
-        if (isGroupSelected) {
-            return new Promise((resolve, reject) => {
-                rl.question('enter the title of the todo you want to delete: ', (title) => {
-                    resolve();
-                    removeTodo(title);
-                });
-            })
-        }
-        else {
-            console.log("You must choose a group !");
-        }
-    }
-    else {
-        console.log(chalk.yellow("You must to signin !"));
-    }
-}
 
 
-function removeTodo(title) {
-    todo_model.delete_selected_todo_by_name(title, groupSelected, groupSelectedId).then((respone) => {
-        if (respone.deletedCount != 0) {
-            console.log("Todo removed successfully !")
-        }
-        else {
-            console.log("Something went wrong, please try again");
-        }
-    })
-}
+
+
 
 exports.signOut = function () {
     isConnected = false;

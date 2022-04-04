@@ -167,3 +167,8 @@ exports.addNewTodoCLI = async function (groupId, groupName, title, limited_date,
     var res = await todo_model.add_new_todo(groupId, groupName, title, limited_date, description);
     return res;
 }
+
+exports.deleteTodoByTitleCLI = async function (title, groupSelected, groupSelectedId) {
+    var response = await todo_model.delete_selected_todo_by_name(title, groupSelected, groupSelectedId)
+    return response;
+}
