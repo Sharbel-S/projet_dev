@@ -123,7 +123,7 @@ async function createAcount(req, res, response) {
 
 
 // CLI
-exports.editTodoGroup = async function (groupId, group, color) {
+exports.editTodoGroupCLI = async function (groupId, group, color) {
     var res = await todo_model.edit_todo_group_info(groupId, group, color);
     return res;
 }
