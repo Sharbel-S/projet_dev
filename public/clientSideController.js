@@ -149,7 +149,6 @@ function addEventToDeleteTodo() {
 function addEventToSubmitDeleteTodo() {
 	$('.deleteButton2').on('click', function () {
 		var id = $("#modal_body2").text();
-		console.log("id", id);
 		$.ajax({
 			url: '/deleteTask',
 			type: 'DELETE',
