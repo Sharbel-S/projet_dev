@@ -119,4 +119,4 @@ function is_authenticated(req, res, next) {
   res.status(401).send('Authentication required');
 }
 
-app.listen(5000)
+app.listen(5000, () => console.log('listening on http://localhost:5000'));
