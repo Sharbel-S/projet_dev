@@ -1,6 +1,5 @@
 "use strict"
 const chalk = require("chalk");
-var todo_model = require('../models/todo_model');
 var dataTreatment = require('../buisness_model/dataTreatment');
 
 
@@ -56,7 +55,7 @@ async function checkEmail(rl) {
         askForPasswordToSignUp(rl);
     }
     else {
-        console.log("Email already used !");
+        console.log(chalk.red("Email already used !"));
     }
 }
 
@@ -81,22 +80,22 @@ function askForConfirmationPassword(rl) {
 
 async function checkIfPasswordsAreCorrect(PasswordConfirmation) {
     if (PasswordConfirmation !== newPassord) {
-        console.log("Password and confirmation are not the same");
+        console.log(chalk.red("Password and confirmation are not the same"));
     }
     else {
         var res = await dataTreatment.createAccountCLI(newEmail, newPassord);
         if (res != null) {
             idUser = res;
             isConnected = true;
-            console.log("Account created successfully");
-            console.log("Connected with success !");
+            console.log(chalk.green("Account created successfully"));
+            console.log(chalk.green("Connected with success !"));
         }
     }
 }
 
 exports.askForEmailToSignIn = function (rl) {
     if (isConnected) {
-        console.log("You must sign out to sign in with another account");
+        console.log(chalk.yellow("You must sign out to sign in with another account"));
     }
     else {
         return new Promise((resolve, reject) => {
@@ -124,11 +123,11 @@ async function checkEmailPassword() {
     if (res != null) {
         idUser = res;
         isConnected = true;
-        console.log("Connected with success !");
+        console.log(chalk.green("Connected with success !"));
         getAllGroupsForUser(idUser);
     }
     else {
-        console.log("Username or Password incorrect !");
+        console.log(chalk.red("Username or Password incorrect !"));
     }
 }
 
@@ -182,8 +181,8 @@ exports.askForNameForNewGroup = async function (rl) {
 function askForColorForNewGroup(rl) {
     return new Promise((resolve, reject) => {
         rl.question('enter color of the new group : \n' +
-            'Available colors :\n ' +
-            'red - blue - green - yellow - dark - gray - white. \n ', (newGroupColor) => {
+            'Available colors (Please respect the code colors !) :\n ' +
+            '"danger" for red - "info" for blue -"success" for green -"warning" for yellow - "dark" for dark - "secondary" for gray - "light" for white. \n ', (newGroupColor) => {
                 colorNewGroup = newGroupColor;
                 resolve();
                 createNewGroup();
@@ -197,7 +196,7 @@ async function createNewGroup() { // TODO : Faire les couleurs correctement
         console.log(chalk.green("Group has been created successfully !"));
     }
     else {
-        console.log("Something went wrong, please try again");
+        console.log(chalk.red("Something went wrong, please try again"));
     }
 }
 
@@ -221,7 +220,7 @@ async function removeGroup(group) {
         console.log("Group removed successfully !")
     }
     else {
-        console.log("Something went wrong, please try again");
+        console.log(chalk.red("Something went wrong, please try again"));
     }
 }
 
@@ -248,7 +247,7 @@ async function checkIfGroupExist(group, rl) {
         askForColumnToModifyGroup(rl);
     }
     else {
-        console.log("group not found");
+        console.log(chalk.yellow("group not found"));
     }
 }
 
@@ -266,7 +265,7 @@ function askForColumnToModifyGroup(rl) {
                     break;
 
                 default:
-                    console.log(chalk.red('Column not found'));
+                    console.log(chalk.yellow('Column not found'));
             }
         });
     })
@@ -291,21 +290,21 @@ function askForNewGroupColor(rl) {
 }
 
 async function modifyNameIfNoErrors(group) {
-    var res = await dataTreatment.editTodoGroup(groupSelectedId, group, colorNewGroup);
+    var res = await dataTreatment.editTodoGroupCLI(groupSelectedId, group, colorNewGroup);
     if (res.modifiedCount == 1) {
-        console.log("Modified with success");
+        console.log(chalk.green("Modified with success"));
     }
     else {
-        console.log("Something went wrong, please try again !");
+        console.log(chalk.red("Something went wrong, please try again"));
     }
 }
 
 async function modifyColorIfNoErrors(color) {
-    var res = await dataTreatment.editTodoGroup(groupSelectedId, groupSelected, color);
+    var res = await dataTreatment.editTodoGroupCLI(groupSelectedId, groupSelected, color);
     if (res.modifiedCount == 1) {
-        console.log("Modified with success");
+        console.log(chalk.green("Modified with success"));
     } else {
-        console.log("Something went wrong, please try again !");
+        console.log(chalk.red("Something went wrong, please try again"));
     }
 }
 
@@ -333,7 +332,7 @@ async function choseGroupIfExist(group) {
         console.log("Group", groupSelected, "is now selected !");
     }
     else {
-        console.log("Group not found, please make sur that the group already exist !");
+        console.log(chalk.yellow("Group not found, please make sur that the group already exist !"));
     }
 }
 
@@ -344,7 +343,7 @@ exports.printAllTodosOfGroup = async function () {
             printTasksJson(respone);
         }
         else {
-            console.log("You must choose a group !");
+            console.log(chalk.yellow("You must choose a group !"));
         }
     }
     else {
@@ -372,7 +371,7 @@ exports.askForTitleToAddNewTodo = function (rl) {
             return new Promise((resolve, reject) => {
                 rl.question('enter a title: ', (inputTitle) => {
                     if (inputTitle === "") {
-                        console.log("Title cannot be empty !");
+                        console.log(chalk.yellow("Title cannot be empty !"));
                     }
                     else {
                         todoTitle = inputTitle;
@@ -383,7 +382,7 @@ exports.askForTitleToAddNewTodo = function (rl) {
             })
         }
         else {
-            console.log('You must choose a group !');
+            console.log(chalk.yellow('You must choose a group !'));
         }
     }
     else {
@@ -414,10 +413,10 @@ function askForDateToAddNewTodo(rl) {
 async function addNewTodo() {
     var response = await dataTreatment.addNewTodoCLI(groupSelectedId, groupSelected, todoTitle, todoDate, todoDescription);
     if (response != null) {
-        console.log("Data inserted successfully !")
+        console.log(chalk.green("Data inserted successfully !"));
     }
     else {
-        console.log("Something went wrong, please try again");
+        console.log(chalk.yellow("Something went wrong, please try again"));
     }
 }
 
@@ -432,7 +431,7 @@ exports.askForTitleToRemove = function (rl) {
             })
         }
         else {
-            console.log("You must choose a group !");
+            console.log(chalk.yellow("You must choose a group !"));
         }
     }
     else {
@@ -443,10 +442,10 @@ exports.askForTitleToRemove = function (rl) {
 async function removeTodo(title) {
     var respone = await dataTreatment.deleteTodoByTitleCLI(title, groupSelected, groupSelectedId);
     if (respone.deletedCount != 0) {
-        console.log("Todo removed successfully !")
+        console.log(chalk.green("Todo removed successfully !"))
     }
     else {
-        console.log("Something went wrong, please try again");
+        console.log(chalk.yellow("Something went wrong, please try again"));
     }
 }
 
@@ -479,7 +478,7 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
             })
         }
         else {
-            console.log("You must choose a group !")
+            console.log(chalk.yellow("You must choose a group !"))
         }
     }
     else {
@@ -498,7 +497,7 @@ function askForTitleToModifyTodo(rl) {
             })
         }
         else {
-            console.log("Title doesn't exit !");
+            console.log(chalk.yellow("Title doesn't exit !"));
         }
     });
 }
@@ -506,10 +505,10 @@ function askForTitleToModifyTodo(rl) {
 async function modifyTodoTitle() {
     var response = await dataTreatment.modifyTitleCLI(groupSelectedId, todoTitle, todoNewTitle);
     if (response) {
-        console.log("Title has been modified !");
+        console.log(chalk.green("Title has been modified !"));
     }
     else {
-        console.log("Something went wrong, please try again !");
+        console.log(chalk.yellow("Something went wrong, please try again !"));
     }
 }
 
@@ -526,10 +525,10 @@ function askForDateToModifyTodo(rl) {
 async function modifyTodoDate() {
     var response = await dataTreatment.modifyDateCLI(groupSelectedId, todoTitle, todoNewDate);
     if (response) {
-        console.log("Date has been modified !");
+        console.log(chalk.green("Date has been modified !"));
     }
     else {
-        console.log("Something went wrong, please try again !");
+        console.log(chalk.yellow("Something went wrong, please try again !"));
     }
 }
 
@@ -547,10 +546,10 @@ function askForDescriptionToModifyTodo(rl) {
 async function modifyTodoDescription() {
     var response = await dataTreatment.modifyDescriptionCLI(groupSelectedId, todoTitle, todoNewDescription);
     if (response) {
-        console.log("Description has been modified !");
+        console.log(chalk.green("Description has been modified !"));
     }
     else {
-        console.log("Something went wrong, please try again !");
+        console.log(chalk.yellow("Something went wrong, please try again !"));
     }
 }
 
@@ -565,10 +564,10 @@ async function getTodoStatusAndChangeIt() {
     var taskId = response._id.toString();
     if (response.status == "todo") {
         dataTreatment.changeTodoStatusToDoneCLI(taskId);
-        console.log("todo has been changed to done ! ");
+        console.log(chalk.green("todo has been changed to done ! "));
     } else {
         dataTreatment.changeTodoStatusCLI(taskId);
-        console.log("todo has been changed to not done ! ");
+        console.log(chalk.green("todo has been changed to not done ! "));
     }
 }
 
@@ -617,7 +616,7 @@ exports.signOut = function () {
     passwordLog = "";
     idUser = "";
     groupSelected = "";
-    console.log("sign out successfully !");
+    console.log(chalk.green("sign out successfully !"));
 }
 
 
