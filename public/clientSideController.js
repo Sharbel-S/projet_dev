@@ -135,22 +135,6 @@ function addEventToSubmitNewTodoGroup() {
 }
 
 
-function addEventSubmitNewTodoButton() {
-	$('#addButton').on('click', function () {
-		var newlignGroup = $("#groupInputAdd").val();
-		var newlignDate = $("#dateInputAdd").val();
-		var newlignTitle = $("#titleInputAdd").val();
-		var newlignDetails = $("#descriptionInputAdd").val();
-		var newlignGroupSelect = $("#select").val();
-		if (newlignTitle == "") {
-			alert("Title cannot be empty")
-		}
-		else {
-			console.log("ssss");
-		}
-	});
-}
-
 function addEventToDeleteTodo() {
 	$('.deleteButton').on('click', function () {
 		var title = $(this).closest(".divTableRow").find("#lignTitle").text();
