@@ -452,30 +452,37 @@ async function removeTodo(title) {
 exports.askForColumnToModify = function (rl) { // TODO ajouter la modification de status
     if (isConnected) {
         if (isGroupSelected) {
-            return new Promise((resolve, reject) => {
-                rl.question('enter the column you want to modify :\n -title\n -date\n -description\n -status\n', (response) => {
-                    resolve();
-                    switch (response) {
-                        case "title":
-                            askForTitleToModifyTodo(rl);
-                            break;
+            rl.question('enter the title of todo that you want to edit: ', async (title) => {
+                todoTitle = title;
+                var response = await dataTreatment.checkTitleExistCLI(groupSelectedId, todoTitle);
+                if (response) {
+                    rl.question('enter the column you want to modify :\n -title\n -date\n -description\n -status\n', (response) => {
+                        switch (response) {
+                            case "title":
+                                askForTitleToModifyTodo(rl);
+                                break;
 
-                        case "date":
-                            askForDateToModifyTodo(rl);
-                            break;
+                            case "date":
+                                askForDateToModifyTodo(rl);
+                                break;
 
-                        case "description":
-                            askForDescriptionToModifyTodo(rl);
-                            break;
-                        case "status":
-                            changeTodoStatus(rl);
-                            break;
+                            case "description":
+                                askForDescriptionToModifyTodo(rl);
+                                break;
+                            case "status":
+                                changeTodoStatus();
+                                break;
 
-                        default:
-                            console.log(chalk.red('Column not found'));
-                    }
-                });
-            })
+                            default:
+                                console.log(chalk.red('Column not found'));
+                        }
+                    })
+                }
+                else {
+                    console.log(chalk.yellow("title not found"))
+                }
+            }
+            )
         }
         else {
             console.log(chalk.yellow("You must choose a group !"))
@@ -487,19 +494,10 @@ exports.askForColumnToModify = function (rl) { // TODO ajouter la modification d
 }
 
 function askForTitleToModifyTodo(rl) {
-    rl.question('enter the title: ', async (title) => {
-        todoTitle = title;
-        var response = await dataTreatment.checkTitleExistCLI(groupSelectedId, title);
-        if (response) {
-            rl.question('enter the new title: ', (Newtitle) => {
-                todoNewTitle = Newtitle;
-                modifyTodoTitle();
-            })
-        }
-        else {
-            console.log(chalk.yellow("Title doesn't exit !"));
-        }
-    });
+    rl.question('enter the new title: ', (Newtitle) => {
+        todoNewTitle = Newtitle;
+        modifyTodoTitle();
+    })
 }
 
 async function modifyTodoTitle() {
@@ -513,13 +511,10 @@ async function modifyTodoTitle() {
 }
 
 function askForDateToModifyTodo(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        rl.question('enter the new date: ', (NewDate) => {
-            todoNewDate = NewDate;
-            modifyTodoDate();
-        })
-    });
+    rl.question('enter the new date: ', (NewDate) => {
+        todoNewDate = NewDate;
+        modifyTodoDate();
+    })
 }
 
 async function modifyTodoDate() {
@@ -533,13 +528,10 @@ async function modifyTodoDate() {
 }
 
 function askForDescriptionToModifyTodo(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        rl.question('enter the new description: ', (Newdetails) => {
-            todoNewDescription = Newdetails;
-            modifyTodoDescription();
-        })
-    });
+    rl.question('enter the new description: ', (Newdetails) => {
+        todoNewDescription = Newdetails;
+        modifyTodoDescription();
+    })
 }
 
 
@@ -553,12 +545,10 @@ async function modifyTodoDescription() {
     }
 }
 
-function changeTodoStatus(rl) {
-    rl.question('enter the title: ', (title) => {
-        todoTitle = title;
-        getTodoStatusAndChangeIt();
-    });
+function changeTodoStatus() {
+    getTodoStatusAndChangeIt();
 }
+
 async function getTodoStatusAndChangeIt() {
     var response = await dataTreatment.getTodoStauts(todoTitle);
     var taskId = response._id.toString();
